@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- ohmtools app icon template (DESIGN.md, "App icon"), taken from
+       zeiteisen's public/logo.svg. Keep the backdrop and the rim as they are:
+       zeiteisen's scripts/app-icons.mjs finds them by `rx="112" ry="112"` and
+       `stroke-opacity="0.12"` to render the full-bleed PNGs. Draw the glyph
+       in the group below with these gradients, inside the maskable safe zone:
+       the circle cx 256, cy 256, r 204.8. -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0.15" y2="1">
+      <stop offset="0%" stop-color="#1E232D"/>
+      <stop offset="100%" stop-color="#101216"/>
+    </linearGradient>
+    <radialGradient id="faceGrad" cx="42%" cy="32%" r="75%">
+      <stop offset="0%" stop-color="#262B35"/>
+      <stop offset="100%" stop-color="#12151A"/>
+    </radialGradient>
+    <linearGradient id="bezelGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F5F5F4"/>
+      <stop offset="45%" stop-color="#D6D3CE"/>
+      <stop offset="100%" stop-color="#8C8884"/>
+    </linearGradient>
+    <linearGradient id="scarletGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E23A46"/>
+      <stop offset="100%" stop-color="#9E0711"/>
+    </linearGradient>
+    <linearGradient id="maroonGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9E0711"/>
+      <stop offset="100%" stop-color="#5C040A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle backdrop -->
+  <rect x="0" y="0" width="512" height="512" rx="112" ry="112" fill="url(#bgGrad)"/>
+  <rect x="0.75" y="0.75" width="510.5" height="510.5" rx="111.3" ry="111.3" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="1.5"/>
+
+  <!-- Glyph: metal (bezelGrad), dark faces (faceGrad), red (scarletGrad,
+       maroonGrad) and #FFFFFF. -->
+  <g>
+  </g>
+</svg>

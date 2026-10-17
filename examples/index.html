@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <title>ohmtools design without shadcn</title>
+    <link rel="stylesheet" href="../dist/tokens.css" />
+    <style>
+      /* The base-sera look rebuilt on dist/tokens.css alone: what a page
+         without shadcn / Tailwind needs (DESIGN.md). Only custom properties,
+         no colour values. */
+      * {
+        box-sizing: border-box;
+        border-color: var(--border);
+      }
+      body {
+        margin: 0;
+        background: var(--background);
+        color: var(--foreground);
+        font: 14px/1.5 var(--font-sans);
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+      main {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* No boxes: sections split by divider lines, 24px on both sides. */
+      .section {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        padding: var(--space-divider);
+        border-bottom: 1px solid var(--border);
+      }
+      .title {
+        margin: 0;
+        font-size: 18px;
+        line-height: 1;
+        font-weight: 600;
+      }
+      .description {
+        margin: 6px 0 0;
+        line-height: 1.625;
+        color: var(--muted-foreground);
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      /* Buttons: square, 40px, 12px semibold. */
+      .button {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 40px;
+        padding: 0 24px;
+        border: 1px solid transparent;
+        border-radius: 0;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        font: 600 12px/1 var(--font-sans);
+        white-space: nowrap;
+        cursor: pointer;
+        outline: none;
+      }
+      .button:hover {
+        background: color-mix(in oklab, var(--primary) 80%, transparent);
+      }
+      .button:focus-visible {
+        border-color: var(--ring);
+        box-shadow: 0 0 0 2px color-mix(in oklab, var(--ring) 30%, transparent);
+      }
+      .button:active {
+        transform: translateY(1px);
+      }
+      .button:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+      .button.outline {
+        border-color: var(--border);
+        background: transparent;
+        color: var(--foreground);
+      }
+      .button.secondary {
+        background: var(--secondary);
+        color: var(--secondary-foreground);
+      }
+      .button.ghost {
+        background: transparent;
+        color: var(--foreground);
+      }
+      .button.outline:hover,
+      .button.ghost:hover {
+        background: var(--muted);
+      }
+      .button.destructive {
+        background: color-mix(in oklab, var(--destructive) 10%, transparent);
+        color: var(--destructive);
+      }
+      .button.destructive:hover {
+        background: color-mix(in oklab, var(--destructive) 20%, transparent);
+      }
+      .button.link {
+        background: transparent;
+        color: var(--primary);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .button.sm {
+        height: 36px;
+        padding: 0 16px;
+      }
+
+      /* Inputs: an underline, no box, no horizontal padding. */
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-width: 24rem;
+      }
+      .label {
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .input {
+        height: 40px;
+        padding: 4px 0;
+        border: 1px solid transparent;
+        border-bottom-color: var(--input);
+        border-radius: 0;
+        background: transparent;
+        color: var(--foreground);
+        font: 16px var(--font-sans);
+        outline: none;
+      }
+      @media (width >= 768px) {
+        .input {
+          font-size: 14px;
+        }
+      }
+      .input::placeholder {
+        color: var(--muted-foreground);
+      }
+      .input:focus-visible {
+        border-bottom-color: var(--ring);
+      }
+
+      /* Overlays are the only surfaces that float. */
+      .menu {
+        width: 14rem;
+        padding: 6px 0;
+        background: var(--popover);
+        color: var(--popover-foreground);
+        box-shadow:
+          0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent),
+          0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+      .menu-label {
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted-foreground);
+      }
+      .menu-item {
+        display: flex;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .menu-item:hover,
+      .menu-item.highlighted {
+        background: var(--accent);
+        color: var(--accent-foreground);
+      }
+      .menu-item .note {
+        margin-left: auto;
+        color: var(--muted-foreground);
+      }
+      .menu-separator {
+        height: 1px;
+        margin: 6px 0;
+        background: color-mix(in oklab, var(--border) 50%, transparent);
+      }
+
+      /* Data told apart by colour: tints of primary, text primary-foreground,
+         and a name on every block, never colour alone. */
+      .blocks {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 4px;
+      }
+      .block {
+        padding: 8px;
+        color: var(--primary-foreground);
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        gap: 12px 24px;
+      }
+      .swatch {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+      }
+      .swatch span:first-child {
+        width: 24px;
+        height: 24px;
+        flex: none;
+        box-shadow: inset 0 0 0 1px var(--border);
+      }
+
+      /* Footer: name and version first, the language switcher last. */
+      footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px var(--space-divider);
+      }
+      .brand {
+        font-weight: 600;
+      }
+      .version {
+        margin-left: 4px;
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--muted-foreground);
+      }
+      footer .row {
+        margin-left: auto;
+        gap: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1 class="sr-only">ohmtools design</h1>
+
+      <section class="section">
+        <div>
+          <h2 class="title">Buttons</h2>
+          <p class="description">Square, 40px high, 12px semibold. Red is the only accent.</p>
+        </div>
+        <div class="row">
+          <button class="button">Default</button>
+          <button class="button outline">Outline</button>
+          <button class="button secondary">Secondary</button>
+          <button class="button ghost">Ghost</button>
+          <button class="button destructive">Delete data…</button>
+          <button class="button link">Link</button>
+          <button class="button" disabled>Disabled</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div>
+          <h2 class="title">Inputs</h2>
+          <p class="description">An underline, no box. 16px on phones, so iOS does not zoom in.</p>
+        </div>
+        <label class="field">
+          <span class="label">Profile name</span>
+          <input class="input" placeholder="e.g. “Winter, plan B”" />
+        </label>
+      </section>
+
+      <section class="section">
+        <div>
+          <h2 class="title">Menu</h2>
+          <p class="description">Overlays float on popover with a ring and a shadow; nothing else does.</p>
+        </div>
+        <div class="menu" role="menu">
+          <div class="menu-label">Backup and reset</div>
+          <div class="menu-item highlighted" role="menuitem">Save backup</div>
+          <div class="menu-item" role="menuitem">Load backup…</div>
+          <div class="menu-separator"></div>
+          <div class="menu-item" role="menuitem">Catalog URL…<span class="note">custom</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div>
+          <h2 class="title">Data</h2>
+          <p class="description">Tints of primary, each named on the block itself.</p>
+        </div>
+        <div class="blocks">
+          <div class="block" style="background: var(--primary)">BEI1</div>
+          <div class="block" style="background: var(--tint-1)">BEI2</div>
+          <div class="block" style="background: var(--tint-2)">BEI3</div>
+          <div class="block" style="background: var(--tint-3)">BEI4</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div>
+          <h2 class="title">Tokens</h2>
+          <p class="description">The colours of the current mode. Switch the device to dark mode to see the other.</p>
+        </div>
+        <div class="swatches" id="swatches"></div>
+      </section>
+    </main>
+
+    <footer>
+      <span class="brand">ohmtools<span class="version">v1.0.0</span></span>
+      <div class="row">
+        <button class="button ghost sm">EN</button>
+        <button class="button ghost sm">DE</button>
+      </div>
+    </footer>
+
+    <script>
+      const names = [
+        "background", "foreground", "popover", "primary", "primary-foreground",
+        "secondary", "muted", "muted-foreground", "accent", "destructive",
+        "border", "input", "ring", "chart-1", "chart-2", "chart-3", "chart-4",
+        "chart-5", "tint-1", "tint-2", "tint-3",
+      ];
+      document.getElementById("swatches").innerHTML = names
+        .map((n) => `<div class="swatch"><span style="background: var(--${n})"></span><span>${n}</span></div>`)
+        .join("");
+    </script>
+  </body>
+</html>

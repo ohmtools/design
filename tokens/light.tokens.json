@@ -1,0 +1,223 @@
+{
+  "$description": "ohmtools theme, light mode: shadcn Red on Neutral (style base-sera). Generated outputs: npm run build.",
+  "color": {
+    "$type": "color",
+    "background": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [1, 0, 0]
+      },
+      "$description": "Page background."
+    },
+    "foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.145, 0, 0]
+      },
+      "$description": "Text and icons on the background."
+    },
+    "card": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [1, 0, 0]
+      },
+      "$description": "Card surface. Sections drop it (no boxes), so it is rarely seen."
+    },
+    "card-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.145, 0, 0]
+      },
+      "$description": "Text on card."
+    },
+    "popover": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [1, 0, 0]
+      },
+      "$description": "Floating surfaces: dialogs, popovers, menus, toasts."
+    },
+    "popover-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.145, 0, 0]
+      },
+      "$description": "Text and icons on popover."
+    },
+    "primary": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.505, 0.213, 27.518]
+      },
+      "$description": "The one accent colour: main action, active marks, links, data tints."
+    },
+    "primary-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.971, 0.013, 17.38]
+      },
+      "$description": "Text and icons on primary and on its tints."
+    },
+    "secondary": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.967, 0.001, 286.375]
+      },
+      "$description": "Secondary buttons."
+    },
+    "secondary-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.21, 0.006, 285.885]
+      },
+      "$description": "Text on secondary."
+    },
+    "muted": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.97, 0, 0]
+      },
+      "$description": "Subtle fills: hover and open state of ghost and outline controls."
+    },
+    "muted-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.556, 0, 0]
+      },
+      "$description": "Secondary text: descriptions, hints, captions, trailing notes."
+    },
+    "accent": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.97, 0, 0]
+      },
+      "$description": "Highlighted item in menus, lists and selects (hover, keyboard focus)."
+    },
+    "accent-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.205, 0, 0]
+      },
+      "$description": "Text on accent."
+    },
+    "destructive": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.577, 0.245, 27.325]
+      },
+      "$description": "Destructive actions and errors: text, and tinted fills at 10-30 %."
+    },
+    "border": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.922, 0, 0]
+      },
+      "$description": "Divider lines and borders."
+    },
+    "input": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.922, 0, 0]
+      },
+      "$description": "Underline of inputs, outline of controls."
+    },
+    "ring": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.708, 0, 0]
+      },
+      "$description": "Focus indication."
+    },
+    "chart-1": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.808, 0.114, 19.571]
+      },
+      "$description": "Chart series 1 (lightest red)."
+    },
+    "chart-2": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.637, 0.237, 25.331]
+      },
+      "$description": "Chart series 2."
+    },
+    "chart-3": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.577, 0.245, 27.325]
+      },
+      "$description": "Chart series 3."
+    },
+    "chart-4": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.505, 0.213, 27.518]
+      },
+      "$description": "Chart series 4."
+    },
+    "chart-5": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.444, 0.177, 26.899]
+      },
+      "$description": "Chart series 5 (darkest red)."
+    },
+    "sidebar": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.985, 0, 0]
+      },
+      "$description": "shadcn sidebar background."
+    },
+    "sidebar-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.145, 0, 0]
+      },
+      "$description": "Text on sidebar."
+    },
+    "sidebar-primary": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.577, 0.245, 27.325]
+      },
+      "$description": "Primary inside the sidebar."
+    },
+    "sidebar-primary-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.971, 0.013, 17.38]
+      },
+      "$description": "Text on sidebar-primary."
+    },
+    "sidebar-accent": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.97, 0, 0]
+      },
+      "$description": "Highlighted sidebar item."
+    },
+    "sidebar-accent-foreground": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.205, 0, 0]
+      },
+      "$description": "Text on sidebar-accent."
+    },
+    "sidebar-border": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.922, 0, 0]
+      },
+      "$description": "Sidebar borders."
+    },
+    "sidebar-ring": {
+      "$value": {
+        "colorSpace": "oklch",
+        "components": [0.708, 0, 0]
+      },
+      "$description": "Focus indication inside the sidebar."
+    }
+  }
+}

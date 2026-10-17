@@ -1,0 +1,32 @@
+{
+  "$description": "ohmtools tokens that do not change with light and dark mode. Generated outputs: npm run build.",
+  "font": {
+    "$type": "fontFamily",
+    "sans": {
+      "$value": ["Inter Variable", "sans-serif"],
+      "$description": "The only typeface, for text and headings alike. Bundled with the app (@fontsource-variable/inter), never loaded from a CDN."
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "base": {
+      "$value": { "value": 0.625, "unit": "rem" },
+      "$description": "shadcn's --radius. base-sera draws every control with square corners (rounded-none), so UI corners are 0; kept because shadcn components derive their radius scale from it."
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "divider": {
+      "$value": { "value": 24, "unit": "px" },
+      "$description": "The spacing unit around every divider line, on both sides."
+    }
+  },
+  "tint": {
+    "$type": "number",
+    "$description": "Tints of primary for data told apart by colour (one per timetable, series, category). Step n: lightness - n * lightness-step, chroma - n * chroma-step (at least chroma-min), hue unchanged; after steps the ramp starts over. Text on a tint is primary-foreground.",
+    "lightness-step": { "$value": 0.055 },
+    "chroma-step": { "$value": 0.04 },
+    "chroma-min": { "$value": 0.03 },
+    "steps": { "$value": 4 }
+  }
+}

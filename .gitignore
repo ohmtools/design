@@ -1,0 +1,6 @@
+node_modules
+.DS_Store
+
+# claude code: worktrees + personal settings
+.claude/worktrees
+.claude/settings.local.json
