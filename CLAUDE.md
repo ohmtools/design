@@ -39,4 +39,5 @@ Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
 - `examples/index.html` rebuilds the look on `dist/tokens.css` alone; check
   it at 1440px and 360px, light and dark, after changing tokens or rules
   (headless chromium with Playwright, `colorScheme` per page).
-- Docs and code comments in English, like zeiteisen.
+- `README.md` in German (user decision); `DESIGN.md`, this file and code
+  comments in English, like zeiteisen.
