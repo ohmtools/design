@@ -1,6 +1,6 @@
 {
   "name": "@ohmtools/design",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "description": "One look for every ohmtools app: design rules and tokens.",
   "license": "BSD-3-Clause",

@@ -3,30 +3,47 @@
   "font": {
     "$type": "fontFamily",
     "sans": {
-      "$value": ["Inter Variable", "sans-serif"],
-      "$description": "The only typeface, for text and headings alike. Bundled with the app (@fontsource-variable/inter), never loaded from a CDN."
+      "$value": ["Geist Variable", "system-ui", "sans-serif"],
+      "$description": "Text and headings. Bundled with the app (@fontsource-variable/geist), never loaded from a CDN: apps run offline."
+    },
+    "mono": {
+      "$value": ["Geist Mono Variable", "ui-monospace", "monospace"],
+      "$description": "Only for times, rooms, dates, week numbers, group numbers, version numbers and file endings. Bundled (@fontsource-variable/geist-mono)."
     }
   },
   "radius": {
     "$type": "dimension",
     "base": {
       "$value": { "value": 0.625, "unit": "rem" },
-      "$description": "shadcn's --radius. base-sera draws every control with square corners (rounded-none), so UI corners are 0; kept because shadcn components derive their radius scale from it."
+      "$description": "shadcn's --radius, 10px: grid frames, dialogs, drawers. Derived: radius-md 8px for buttons, fields and menus, radius-sm 6px for blocks, badges and tab fields."
     }
   },
   "space": {
     "$type": "dimension",
     "divider": {
       "$value": { "value": 24, "unit": "px" },
-      "$description": "The spacing unit around every divider line, on both sides."
+      "$description": "The spacing unit around every divider line, on both sides, from the compact step on."
+    },
+    "divider-narrow": {
+      "$value": { "value": 16, "unit": "px" },
+      "$description": "The same unit on phones (the narrow step)."
     }
   },
-  "tint": {
-    "$type": "number",
-    "$description": "Tints of primary for data told apart by colour (one per timetable, series, category). Step n: lightness - n * lightness-step, chroma - n * chroma-step (at least chroma-min), hue unchanged; after steps the ramp starts over. Text on a tint is primary-foreground.",
-    "lightness-step": { "$value": 0.055 },
-    "chroma-step": { "$value": 0.04 },
-    "chroma-min": { "$value": 0.03 },
-    "steps": { "$value": 4 }
+  "motion": {
+    "easing": {
+      "$type": "cubicBezier",
+      "$value": [0.2, 0, 0, 1],
+      "$description": "The one easing: fast out, gentle landing. For every movement."
+    },
+    "duration-in": {
+      "$type": "duration",
+      "$value": { "value": 280, "unit": "ms" },
+      "$description": "Something coming in: a page, a panel, a week sliding in."
+    },
+    "duration-out": {
+      "$type": "duration",
+      "$value": { "value": 200, "unit": "ms" },
+      "$description": "Something leaving: shorter than coming in."
+    }
   }
 }

@@ -12,13 +12,31 @@ const read = (name) =>
 // Tokens of a group in file order, `$`-keys dropped.
 const entries = (group) => Object.entries(group).filter(([key]) => !key.startsWith("$"));
 
+// The theme is sRGB hex as zeiteisen writes it; the chart colours stay the
+// OKLCH shadcn writes. An sRGB token carries `hex` (what the outputs use) and
+// `components` (DTCG's required form) that must say the same.
+function checkColour(value, where) {
+  if (value?.colorSpace === "oklch" && value.components?.length === 3) return;
+  if (value?.colorSpace === "srgb" && /^#[0-9a-f]{6}$/.test(value.hex ?? "")) {
+    const rgb = value.components?.map((c) => Math.round(c * 255));
+    if (rgb?.length === 3 && rgb.map(hex2).join("") === value.hex.slice(1)) return;
+    throw new Error(`${where}: components do not match hex ${value.hex}`);
+  }
+  throw new Error(`${where}: not an oklch colour or an srgb colour with a lower-case #rrggbb hex`);
+}
+
 function colors(file, mode) {
   return entries(file.color).map(([name, token]) => {
     const value = token.$value;
-    if (value?.colorSpace !== "oklch" || value.components?.length !== 3) {
-      throw new Error(`tokens/${mode}: ${name} is not an oklch colour`);
-    }
-    return { name, value, description: token.$description };
+    checkColour(value, `tokens/${mode}: ${name}`);
+    return {
+      name,
+      value,
+      description: token.$description,
+      // The Tailwind colour name, when it is not the token's own
+      // (`accent-red` -> `bg-red`).
+      utility: token.$extensions?.["dev.ohmtools"]?.tailwind ?? name,
+    };
   });
 }
 
@@ -30,15 +48,26 @@ export function loadTokens() {
   if (names(light) !== names(dark)) {
     throw new Error("tokens: light and dark must name the same colours in the same order");
   }
-  const tint = Object.fromEntries(entries(base.tint).map(([key, token]) => [key, token.$value]));
   return {
     light,
     dark,
     font: base.font.sans.$value,
+    mono: base.font.mono.$value,
     radius: base.radius.base.$value,
     divider: base.space.divider.$value,
-    tint,
+    dividerNarrow: base.space["divider-narrow"].$value,
+    easing: base.motion.easing.$value,
+    durationIn: base.motion["duration-in"].$value,
+    durationOut: base.motion["duration-out"].$value,
   };
+}
+
+// shadcn's own colours end with `sidebar-ring`; what follows is the design's
+// own (red accent, warning, data colours, …).
+export function splitShadcn(list) {
+  const end = list.findIndex((c) => c.name === "sidebar-ring") + 1;
+  if (end === 0) throw new Error("tokens: sidebar-ring missing");
+  return { shadcn: list.slice(0, end), own: list.slice(end) };
 }
 
 // --- CSS strings ------------------------------------------------------------
@@ -46,15 +75,27 @@ export function loadTokens() {
 // Numbers as shadcn writes them: shortest form, no trailing zeros.
 const num = (n) => String(Number(n.toFixed(3)));
 
-export function cssColor({ components: [l, c, h], alpha = 1 }) {
+export function cssColor(value) {
+  if (value.colorSpace === "srgb") return value.hex;
+  const [l, c, h] = value.components;
+  const alpha = value.alpha ?? 1;
   const a = alpha < 1 ? ` / ${Math.round(alpha * 1000) / 10}%` : "";
   return `oklch(${num(l)} ${num(c)} ${num(h)}${a})`;
 }
 
 export const cssDimension = ({ value, unit }) => `${value}${unit}`;
 
+export const cssEasing = (points) => `cubic-bezier(${points.join(", ")})`;
+
 // Font names with spaces are quoted, generic families are not.
-const GENERIC = new Set(["serif", "sans-serif", "monospace", "system-ui", "ui-sans-serif"]);
+const GENERIC = new Set([
+  "serif",
+  "sans-serif",
+  "monospace",
+  "system-ui",
+  "ui-sans-serif",
+  "ui-monospace",
+]);
 export const cssFont = (families) =>
   families.map((f) => (GENERIC.has(f) ? f : `"${f}"`)).join(", ");
 
@@ -81,36 +122,14 @@ export function srgb({ components: [L, C, H] }) {
   });
 }
 
-const hex2 = (n) => n.toString(16).padStart(2, "0");
+function hex2(n) {
+  return n.toString(16).padStart(2, "0");
+}
 
 // `#rrggbb`, or `#rrggbbaa` for a colour with alpha.
 export function hex(value) {
+  if (value.colorSpace === "srgb") return value.hex;
   const alpha = value.alpha ?? 1;
   const rgb = srgb(value).map(hex2).join("");
   return `#${rgb}${alpha < 1 ? hex2(Math.round(alpha * 255)) : ""}`;
-}
-
-// --- Tints ---------------------------------------------------------------------
-
-// Step n of the primary ramp (step 0 is primary itself), as zeiteisen's
-// `tint.ts` computes it at runtime with relative colour syntax.
-export function tint(primary, step, t) {
-  const [l, c, h] = primary.components;
-  return {
-    colorSpace: "oklch",
-    components: [
-      Number((l - step * t["lightness-step"]).toFixed(3)),
-      Number(Math.max(c - step * t["chroma-step"], t["chroma-min"]).toFixed(3)),
-      h,
-    ],
-  };
-}
-
-// tint-1 … tint-(steps - 1) of a mode; tint-0 would only repeat primary.
-export function tints(mode, t) {
-  const primary = mode.find((c) => c.name === "primary").value;
-  return Array.from({ length: t.steps - 1 }, (_, i) => ({
-    name: `tint-${i + 1}`,
-    value: tint(primary, i + 1, t),
-  }));
 }

@@ -5,53 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <title>ohmtools design without shadcn</title>
     <link rel="stylesheet" href="../dist/tokens.css" />
     <style>
-      /* The base-sera look rebuilt on dist/tokens.css alone: what a page
-         without shadcn / Tailwind needs (DESIGN.md). Only custom properties,
-         no colour values. */
+      /* The base-vega look with zeiteisen's theme, rebuilt on
+         dist/tokens.css alone: what a page without shadcn / Tailwind needs
+         (DESIGN.md). Only custom properties, no colour values. Geist is not
+         bundled here, so the page shows the fallback sans-serif. */
       * {
         box-sizing: border-box;
         border-color: var(--border);
       }
+      html,
+      body {
+        height: 100%;
+      }
       body {
         margin: 0;
+        display: flex;
+        flex-direction: column;
         background: var(--background);
         color: var(--foreground);
         font: 14px/1.5 var(--font-sans);
       }
-      .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-        white-space: nowrap;
+      .mono {
+        font-family: var(--font-mono);
       }
-      main {
-        display: flex;
-        flex-direction: column;
+      .muted {
+        color: var(--muted-foreground);
       }
 
-      /* No boxes: sections split by divider lines, 24px on both sides. */
+      /* One unit around every divider: 16px on phones, 24px from 40rem. */
+      :root {
+        --unit: var(--space-divider-narrow);
+      }
+      @media (width >= 40rem), (height < 600px) and (orientation: landscape) {
+        :root {
+          --unit: var(--space-divider);
+        }
+      }
+
+      /* Header: 56px, the app tile in red, the view's tabs, panel buttons
+         right. The page itself never scrolls; main does. */
+      header {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 16px;
+        height: calc(56px + env(safe-area-inset-top));
+        padding: env(safe-area-inset-top) max(var(--unit), env(safe-area-inset-right)) 0
+          max(var(--unit), env(safe-area-inset-left));
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .tile {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: calc(var(--radius) * 0.6);
+        background: var(--accent-red);
+        color: var(--accent-red-foreground);
+      }
+      header .icons {
+        display: flex;
+        gap: 8px;
+        margin-left: auto;
+      }
+      main {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+      }
+
+      /* No boxes: sections split by divider lines, one unit on both sides. */
       .section {
         display: flex;
         flex-direction: column;
-        gap: 24px;
-        padding: var(--space-divider);
+        gap: 16px;
+        padding: var(--unit) max(var(--unit), env(safe-area-inset-right)) var(--unit)
+          max(var(--unit), env(safe-area-inset-left));
         border-bottom: 1px solid var(--border);
       }
       .title {
         margin: 0;
-        font-size: 18px;
-        line-height: 1;
+        font-size: 16px;
+        line-height: 1.5;
         font-weight: 600;
       }
       .description {
-        margin: 6px 0 0;
-        line-height: 1.625;
+        margin: 0;
         color: var(--muted-foreground);
       }
       .row {
@@ -61,72 +111,87 @@
         align-items: center;
       }
 
-      /* Buttons: square, 40px, 12px semibold. */
+      /* Buttons: 36px, 8px corners, 14px medium. Ghost unless main action. */
       .button {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 6px;
-        height: 40px;
-        padding: 0 24px;
+        height: 36px;
+        padding: 0 10px;
         border: 1px solid transparent;
-        border-radius: 0;
-        background: var(--primary);
-        color: var(--primary-foreground);
-        font: 600 12px/1 var(--font-sans);
+        border-radius: calc(var(--radius) * 0.8);
+        background: transparent;
+        color: var(--foreground);
+        font: 500 14px/1 var(--font-sans);
         white-space: nowrap;
         cursor: pointer;
         outline: none;
+        transition: all 150ms var(--ease);
       }
       .button:hover {
-        background: color-mix(in oklab, var(--primary) 80%, transparent);
+        background: var(--muted);
       }
       .button:focus-visible {
         border-color: var(--ring);
-        box-shadow: 0 0 0 2px color-mix(in oklab, var(--ring) 30%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
       }
       .button:active {
-        transform: translateY(1px);
+        translate: 0 1px;
       }
       .button:disabled {
         opacity: 0.5;
         pointer-events: none;
       }
+      .button.default {
+        background: var(--primary);
+        color: var(--primary-foreground);
+      }
+      .button.default:hover {
+        background: color-mix(in oklab, var(--primary) 80%, transparent);
+      }
       .button.outline {
         border-color: var(--border);
-        background: transparent;
-        color: var(--foreground);
+        background: var(--background);
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
       }
       .button.secondary {
         background: var(--secondary);
         color: var(--secondary-foreground);
       }
-      .button.ghost {
-        background: transparent;
-        color: var(--foreground);
-      }
-      .button.outline:hover,
-      .button.ghost:hover {
-        background: var(--muted);
-      }
       .button.destructive {
-        background: color-mix(in oklab, var(--destructive) 10%, transparent);
-        color: var(--destructive);
+        background: var(--accent-red);
+        color: var(--accent-red-foreground);
       }
       .button.destructive:hover {
-        background: color-mix(in oklab, var(--destructive) 20%, transparent);
+        background: color-mix(in oklab, var(--accent-red) 90%, transparent);
       }
-      .button.link {
-        background: transparent;
-        color: var(--primary);
-        text-decoration: underline;
-        text-underline-offset: 4px;
+      .button.icon {
+        width: 36px;
+        padding: 0;
       }
-      .button.sm {
-        height: 36px;
-        padding: 0 16px;
+      .button[aria-pressed="true"],
+      .button[aria-pressed="true"]:hover {
+        background: var(--accent);
+        color: var(--accent-foreground);
+      }
+      .button svg {
+        width: 16px;
+        height: 16px;
+        flex: none;
+      }
+      @media (prefers-color-scheme: dark) {
+        .button.outline {
+          border-color: var(--input);
+          background: color-mix(in oklab, var(--input) 30%, transparent);
+        }
+        .button.ghost:hover,
+        .button.icon:hover {
+          background: color-mix(in oklab, var(--muted) 50%, transparent);
+        }
       }
 
-      /* Inputs: an underline, no box, no horizontal padding. */
+      /* Inputs: base-vega's box, 36px, 16px on phones so iOS does not zoom. */
       .field {
         display: flex;
         flex-direction: column;
@@ -134,16 +199,16 @@
         max-width: 24rem;
       }
       .label {
-        font-size: 12px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 500;
       }
       .input {
-        height: 40px;
-        padding: 4px 0;
-        border: 1px solid transparent;
-        border-bottom-color: var(--input);
-        border-radius: 0;
+        height: 36px;
+        padding: 4px 10px;
+        border: 1px solid var(--input);
+        border-radius: calc(var(--radius) * 0.8);
         background: transparent;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
         color: var(--foreground);
         font: 16px var(--font-sans);
         outline: none;
@@ -153,17 +218,70 @@
           font-size: 14px;
         }
       }
+      @media (prefers-color-scheme: dark) {
+        .input {
+          background: color-mix(in oklab, var(--input) 30%, transparent);
+        }
+      }
       .input::placeholder {
         color: var(--muted-foreground);
       }
       .input:focus-visible {
-        border-bottom-color: var(--ring);
+        border-color: var(--ring);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+      }
+
+      /* Tabs: a muted track, one indicator that glides to the picked tab. */
+      .tabs {
+        position: relative;
+        display: inline-flex;
+        width: fit-content;
+        height: 36px;
+        padding: 3px;
+        border-radius: var(--radius);
+        background: var(--muted);
+      }
+      .tabs .indicator {
+        position: absolute;
+        top: 3px;
+        bottom: 4px;
+        left: 0;
+        border: 1px solid transparent;
+        border-radius: calc(var(--radius) * 0.8);
+        background: var(--background);
+        box-shadow:
+          0 1px 3px rgb(0 0 0 / 0.1),
+          0 1px 2px -1px rgb(0 0 0 / 0.1);
+        transition:
+          translate 300ms var(--ease),
+          width 300ms var(--ease);
+      }
+      @media (prefers-color-scheme: dark) {
+        .tabs .indicator {
+          border-color: var(--input);
+          background: color-mix(in oklab, var(--input) 30%, transparent);
+        }
+      }
+      .tab {
+        position: relative;
+        padding: 0 8px;
+        border: 0;
+        background: transparent;
+        color: var(--muted-foreground);
+        font: 500 14px var(--font-sans);
+        cursor: pointer;
+        transition: color 150ms var(--ease);
+      }
+      .tab[aria-selected="true"],
+      .tab:hover {
+        color: var(--foreground);
       }
 
       /* Overlays are the only surfaces that float. */
       .menu {
-        width: 14rem;
-        padding: 6px 0;
+        width: 15rem;
+        padding: 4px;
+        border-radius: calc(var(--radius) * 0.8);
         background: var(--popover);
         color: var(--popover-foreground);
         box-shadow:
@@ -172,16 +290,18 @@
           0 2px 4px -2px rgb(0 0 0 / 0.1);
       }
       .menu-label {
-        padding: 8px 12px;
+        padding: 6px 8px;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 500;
         color: var(--muted-foreground);
       }
       .menu-item {
         display: flex;
-        padding: 8px 12px;
-        font-size: 12px;
-        font-weight: 500;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 8px;
+        border-radius: calc(var(--radius) * 0.6);
+        font-size: 14px;
       }
       .menu-item:hover,
       .menu-item.highlighted {
@@ -191,90 +311,159 @@
       .menu-item .note {
         margin-left: auto;
         color: var(--muted-foreground);
+        font-size: 12px;
+      }
+      .menu-item.destructive {
+        color: var(--destructive);
       }
       .menu-separator {
         height: 1px;
-        margin: 6px 0;
-        background: color-mix(in oklab, var(--border) 50%, transparent);
+        margin: 4px -4px;
+        background: var(--border);
       }
 
-      /* Data told apart by colour: tints of primary, text primary-foreground,
-         and a name on every block, never colour alone. */
-      .blocks {
+      /* Data told apart by colour: fill plus border per kind, the kind written
+         on every block, never colour alone. */
+      .grid {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 4px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 2px;
+        max-width: 36rem;
+        padding-top: 8px;
+        border-top: 1px solid var(--grid);
+      }
+      @media (width >= 40rem) {
+        .grid {
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
       }
       .block {
-        padding: 8px;
-        color: var(--primary-foreground);
+        display: flex;
+        flex-direction: column;
+        min-height: 72px;
+        padding: 4px 8px;
+        border: 1px solid;
+        border-radius: calc(var(--radius) * 0.6);
         font-size: 12px;
+        line-height: 16px;
+        animation: block-in var(--duration-in) var(--ease) backwards;
+        transition:
+          filter 150ms var(--ease),
+          scale 150ms var(--ease);
+      }
+      .block:hover {
+        filter: brightness(1.04) saturate(1.1);
+      }
+      .block:active {
+        scale: 0.98;
+      }
+      .block b {
         font-weight: 600;
       }
+      .block .kind {
+        color: var(--block-kind);
+      }
+      .block .room {
+        color: var(--block-room);
+        font-family: var(--font-mono);
+      }
+      @keyframes block-in {
+        from {
+          opacity: 0;
+          scale: 0.96;
+        }
+      }
+      .hour {
+        color: var(--hour);
+        font: 12px var(--font-mono);
+      }
+      .warning {
+        margin: 0;
+        color: var(--warning);
+        font-size: 12px;
+      }
+      .today {
+        display: inline-grid;
+        place-items: center;
+        min-width: 24px;
+        height: 24px;
+        padding: 0 6px;
+        border-radius: 999px;
+        background: var(--accent-red);
+        color: var(--accent-red-foreground);
+        font: 500 12px var(--font-mono);
+      }
+
       .swatches {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
         gap: 12px 24px;
       }
       .swatch {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 12px;
+        font: 12px var(--font-mono);
       }
       .swatch span:first-child {
         width: 24px;
         height: 24px;
         flex: none;
+        border-radius: calc(var(--radius) * 0.6);
         box-shadow: inset 0 0 0 1px var(--border);
       }
 
-      /* Footer: name and version first, the language switcher last. */
-      footer {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px var(--space-divider);
-      }
-      .brand {
-        font-weight: 600;
-      }
-      .version {
-        margin-left: 4px;
-        font-size: 12px;
-        font-weight: 400;
-        color: var(--muted-foreground);
-      }
-      footer .row {
-        margin-left: auto;
-        gap: 0;
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
       }
     </style>
   </head>
   <body>
+    <header>
+      <span class="brand"><span class="tile" aria-hidden="true">o</span>ohmtools</span>
+      <div class="icons">
+        <button class="button icon" aria-label="Notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M15 3v4a2 2 0 0 0 2 2h4"/></svg>
+        </button>
+        <button class="button icon" aria-label="Settings" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </header>
+
     <main>
-      <h1 class="sr-only">ohmtools design</h1>
+      <h1 style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">ohmtools design</h1>
 
       <section class="section">
         <div>
           <h2 class="title">Buttons</h2>
-          <p class="description">Square, 40px high, 12px semibold. Red is the only accent.</p>
+          <p class="description">Ghost unless they are the main action. Destructive is filled red, the one accent.</p>
         </div>
         <div class="row">
-          <button class="button">Default</button>
+          <button class="button default">Apply</button>
+          <button class="button ghost">Later</button>
           <button class="button outline">Outline</button>
           <button class="button secondary">Secondary</button>
-          <button class="button ghost">Ghost</button>
           <button class="button destructive">Delete data…</button>
-          <button class="button link">Link</button>
-          <button class="button" disabled>Disabled</button>
+          <button class="button default" disabled>Disabled</button>
         </div>
       </section>
 
       <section class="section">
         <div>
-          <h2 class="title">Inputs</h2>
-          <p class="description">An underline, no box. 16px on phones, so iOS does not zoom in.</p>
+          <h2 class="title">Tabs and inputs</h2>
+          <p class="description">One indicator glides to the picked tab. Inputs are a box, 16px on phones.</p>
+        </div>
+        <div class="tabs" role="tablist" id="tabs">
+          <span class="indicator" aria-hidden="true"></span>
+          <button class="tab" role="tab" aria-selected="true">Ignore</button>
+          <button class="tab" role="tab" aria-selected="false">Auto-update</button>
+          <button class="tab" role="tab" aria-selected="false">Freeze</button>
         </div>
         <label class="field">
           <span class="label">Profile name</span>
@@ -288,25 +477,31 @@
           <p class="description">Overlays float on popover with a ring and a shadow; nothing else does.</p>
         </div>
         <div class="menu" role="menu">
-          <div class="menu-label">Backup and reset</div>
-          <div class="menu-item highlighted" role="menuitem">Save backup</div>
-          <div class="menu-item" role="menuitem">Load backup…</div>
+          <div class="menu-label">Profiles</div>
+          <div class="menu-item highlighted" role="menuitem">Winter</div>
+          <div class="menu-item" role="menuitem">Plan B<span class="note mono">.profile</span></div>
           <div class="menu-separator"></div>
-          <div class="menu-item" role="menuitem">Catalog URL…<span class="note">custom</span></div>
+          <div class="menu-item destructive" role="menuitem">Delete profile…</div>
         </div>
       </section>
 
       <section class="section">
         <div>
           <h2 class="title">Data</h2>
-          <p class="description">Tints of primary, each named on the block itself.</p>
+          <p class="description">
+            Coloured by kind, the kind written in every block. Today <span class="today">19</span>, times in mono:
+            <span class="hour">08:00</span>.
+          </p>
         </div>
-        <div class="blocks">
-          <div class="block" style="background: var(--primary)">BEI1</div>
-          <div class="block" style="background: var(--tint-1)">BEI2</div>
-          <div class="block" style="background: var(--tint-2)">BEI3</div>
-          <div class="block" style="background: var(--tint-3)">BEI4</div>
+        <div class="grid">
+          <div class="block" style="background: var(--kind-su); border-color: var(--kind-su-border)"><b>M1</b><span class="kind">SU</span><span class="room">E.101</span></div>
+          <div class="block" style="background: var(--kind-ue); border-color: var(--kind-ue-border)"><b>M1</b><span class="kind">Ue 2.1</span><span class="room">E.204</span></div>
+          <div class="block" style="background: var(--kind-pr); border-color: var(--kind-pr-border)"><b>ELK1</b><span class="kind">Pr 6.2</span><span class="room">W.3.12</span></div>
+          <div class="block" style="background: var(--kind-tu); border-color: var(--kind-tu-border)"><b>EM</b><span class="kind">Tu</span><span class="room">BB.022</span></div>
+          <div class="block" style="background: var(--kind-s); border-color: var(--kind-s-border)"><b>SDS</b><span class="kind">S</span><span class="room">KA.111</span></div>
+          <div class="block" style="background: var(--kind-wf); border-color: var(--kind-wf-border)"><b>WPF</b><span class="kind">WF</span><span class="room">HW.301</span></div>
         </div>
+        <p class="warning">“RT1 Pr” is picked in two groups: 6.1 and 6.2</p>
       </section>
 
       <section class="section">
@@ -316,26 +511,43 @@
         </div>
         <div class="swatches" id="swatches"></div>
       </section>
-    </main>
 
-    <footer>
-      <span class="brand">ohmtools<span class="version">v1.0.0</span></span>
-      <div class="row">
-        <button class="button ghost sm">EN</button>
-        <button class="button ghost sm">DE</button>
-      </div>
-    </footer>
+      <section class="section">
+        <div>
+          <h2 class="title">About</h2>
+          <p class="description">Name and version, under About in the settings.</p>
+        </div>
+        <span style="font-weight: 600">ohmtools <span class="mono muted" style="font-size: 12px; font-weight: 400">v2.0.0</span></span>
+      </section>
+    </main>
 
     <script>
       const names = [
-        "background", "foreground", "popover", "primary", "primary-foreground",
-        "secondary", "muted", "muted-foreground", "accent", "destructive",
-        "border", "input", "ring", "chart-1", "chart-2", "chart-3", "chart-4",
-        "chart-5", "tint-1", "tint-2", "tint-3",
+        "background", "foreground", "popover", "primary", "secondary", "muted",
+        "muted-foreground", "accent", "destructive", "border", "input", "ring",
+        "grid", "hour", "accent-red", "warning", "surface",
+        "kind-su", "kind-ue", "kind-pr", "kind-tu", "kind-s", "kind-wf",
+        "chart-1", "chart-2", "chart-3", "chart-4", "chart-5",
       ];
       document.getElementById("swatches").innerHTML = names
         .map((n) => `<div class="swatch"><span style="background: var(--${n})"></span><span>${n}</span></div>`)
         .join("");
+
+      // The tab indicator: measured from the picked tab, glides on change.
+      const list = document.getElementById("tabs");
+      const indicator = list.querySelector(".indicator");
+      const place = () => {
+        const tab = list.querySelector("[aria-selected=true]");
+        indicator.style.width = `${tab.offsetWidth}px`;
+        indicator.style.translate = `${tab.offsetLeft}px`;
+      };
+      list.addEventListener("click", (event) => {
+        const tab = event.target.closest(".tab");
+        if (!tab) return;
+        for (const t of list.querySelectorAll(".tab")) t.setAttribute("aria-selected", String(t === tab));
+        place();
+      });
+      place();
     </script>
   </body>
 </html>

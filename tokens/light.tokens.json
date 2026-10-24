@@ -1,130 +1,148 @@
 {
-  "$description": "ohmtools theme, light mode: shadcn Red on Neutral (style base-sera). Generated outputs: npm run build.",
+  "$description": "ohmtools theme, light mode: zeiteisen's redesign on shadcn base-vega (white ground, neutral primary, red as the one accent). Generated outputs: npm run build.",
   "color": {
     "$type": "color",
     "background": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [1, 0, 0]
+        "colorSpace": "srgb",
+        "components": [1, 1, 1],
+        "hex": "#ffffff"
       },
-      "$description": "Page background."
+      "$description": "Page ground: white, OLED black in dark mode."
     },
     "foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.145, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
       "$description": "Text and icons on the background."
     },
     "card": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [1, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.9804, 0.9804, 0.9804],
+        "hex": "#fafafa"
       },
-      "$description": "Card surface. Sections drop it (no boxes), so it is rarely seen."
+      "$description": "Card surface, a step above the ground. Sections drop it (no boxes), so it is rarely seen."
     },
     "card-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.145, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
       "$description": "Text on card."
     },
     "popover": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [1, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.9804, 0.9804, 0.9804],
+        "hex": "#fafafa"
       },
-      "$description": "Floating surfaces: dialogs, popovers, menus, toasts."
+      "$description": "Floating surfaces, a step above the ground: popovers, menus, dialogs, sheets, drawers, toasts."
     },
     "popover-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.145, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
       "$description": "Text and icons on popover."
     },
     "primary": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.505, 0.213, 27.518]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
-      "$description": "The one accent colour: main action, active marks, links, data tints."
+      "$description": "The main action: neutral, black on light, white on dark. Red is never primary (accent-red)."
     },
     "primary-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.971, 0.013, 17.38]
+        "colorSpace": "srgb",
+        "components": [0.9804, 0.9804, 0.9804],
+        "hex": "#fafafa"
       },
-      "$description": "Text and icons on primary and on its tints."
+      "$description": "Text and icons on primary."
     },
     "secondary": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.967, 0.001, 286.375]
+        "colorSpace": "srgb",
+        "components": [0.898, 0.898, 0.898],
+        "hex": "#e5e5e5"
       },
       "$description": "Secondary buttons."
     },
     "secondary-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.21, 0.006, 285.885]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
       "$description": "Text on secondary."
     },
     "muted": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.97, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.9608, 0.9608, 0.9608],
+        "hex": "#f5f5f5"
       },
-      "$description": "Subtle fills: hover and open state of ghost and outline controls."
+      "$description": "Subtle fills: the tab track, hover of ghost and outline controls."
     },
     "muted-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.556, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.451, 0.451, 0.451],
+        "hex": "#737373"
       },
-      "$description": "Secondary text: descriptions, hints, captions, trailing notes."
+      "$description": "Secondary text: descriptions, hints, captions, trailing notes, icons in lists."
     },
     "accent": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.97, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.9608, 0.9608, 0.9608],
+        "hex": "#f5f5f5"
       },
-      "$description": "Highlighted item in menus, lists and selects (hover, keyboard focus)."
+      "$description": "Highlighted item in menus, lists and selects; a pressed toggle (an open panel's button)."
     },
     "accent-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.205, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
       "$description": "Text on accent."
     },
     "destructive": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.577, 0.245, 27.325]
+        "colorSpace": "srgb",
+        "components": [0.8627, 0.149, 0.149],
+        "hex": "#dc2626"
       },
-      "$description": "Destructive actions and errors: text, and tinted fills at 10-30 %."
+      "$description": "Red text: errors, invalid fields, destructive menu items. A destructive button is filled accent-red."
     },
     "border": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.922, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.898, 0.898, 0.898],
+        "hex": "#e5e5e5"
       },
       "$description": "Divider lines and borders."
     },
     "input": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.922, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.898, 0.898, 0.898],
+        "hex": "#e5e5e5"
       },
-      "$description": "Underline of inputs, outline of controls."
+      "$description": "Border of inputs and outline controls."
     },
     "ring": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.708, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.6392, 0.6392, 0.6392],
+        "hex": "#a3a3a3"
       },
       "$description": "Focus indication."
     },
@@ -165,59 +183,237 @@
     },
     "sidebar": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.985, 0, 0]
+        "colorSpace": "srgb",
+        "components": [1, 1, 1],
+        "hex": "#ffffff"
       },
-      "$description": "shadcn sidebar background."
+      "$description": "shadcn sidebar background: the ground."
     },
     "sidebar-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.145, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
       "$description": "Text on sidebar."
     },
     "sidebar-primary": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.577, 0.245, 27.325]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
       "$description": "Primary inside the sidebar."
     },
     "sidebar-primary-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.971, 0.013, 17.38]
+        "colorSpace": "srgb",
+        "components": [0.9804, 0.9804, 0.9804],
+        "hex": "#fafafa"
       },
       "$description": "Text on sidebar-primary."
     },
     "sidebar-accent": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.97, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.9608, 0.9608, 0.9608],
+        "hex": "#f5f5f5"
       },
       "$description": "Highlighted sidebar item."
     },
     "sidebar-accent-foreground": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.205, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.0392, 0.0392, 0.0392],
+        "hex": "#0a0a0a"
       },
       "$description": "Text on sidebar-accent."
     },
     "sidebar-border": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.922, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.898, 0.898, 0.898],
+        "hex": "#e5e5e5"
       },
       "$description": "Sidebar borders."
     },
     "sidebar-ring": {
       "$value": {
-        "colorSpace": "oklch",
-        "components": [0.708, 0, 0]
+        "colorSpace": "srgb",
+        "components": [0.6392, 0.6392, 0.6392],
+        "hex": "#a3a3a3"
       },
       "$description": "Focus indication inside the sidebar."
+    },
+    "grid": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9412, 0.9412, 0.9412],
+        "hex": "#f0f0f0"
+      },
+      "$description": "Lines inside a grid or chart (zeiteisen's hour lines), fainter than border."
+    },
+    "hour": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.451, 0.451, 0.451],
+        "hex": "#737373"
+      },
+      "$description": "Labels on those lines (hours, axis ticks), in mono."
+    },
+    "accent-red": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.8627, 0.149, 0.149],
+        "hex": "#dc2626"
+      },
+      "$description": "The one accent, the same in both modes: marks that must stand out (today, the now-line, the picked day, the app tile, an update waiting) and the fill of destructive buttons. Tailwind: bg-red, text-red.",
+      "$extensions": {
+        "dev.ohmtools": {
+          "tailwind": "red"
+        }
+      }
+    },
+    "accent-red-foreground": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [1, 1, 1],
+        "hex": "#ffffff"
+      },
+      "$description": "Text and icons on accent-red.",
+      "$extensions": {
+        "dev.ohmtools": {
+          "tailwind": "red-foreground"
+        }
+      }
+    },
+    "warning": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.7059, 0.3255, 0.0353],
+        "hex": "#b45309"
+      },
+      "$description": "Hints and warnings: amber text, never a fill."
+    },
+    "surface": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9804, 0.9804, 0.9804],
+        "hex": "#fafafa"
+      },
+      "$description": "A plain step above the ground for an area set apart or covered (zeiteisen's lecture-free day)."
+    },
+    "kind-su": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9608, 0.9608, 0.9608],
+        "hex": "#f5f5f5"
+      },
+      "$description": "Data colour, neutral (zeiteisen: SU lecture): block fill."
+    },
+    "kind-su-border": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.8314, 0.8314, 0.8314],
+        "hex": "#d4d4d4"
+      },
+      "$description": "Border of a kind-su block."
+    },
+    "kind-ue": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9373, 0.9647, 1],
+        "hex": "#eff6ff"
+      },
+      "$description": "Data colour, blue (zeiteisen: Ue exercise): block fill."
+    },
+    "kind-ue-border": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.2314, 0.5098, 0.9647],
+        "hex": "#3b82f6"
+      },
+      "$description": "Border of a kind-ue block."
+    },
+    "kind-pr": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [1, 0.9294, 0.8353],
+        "hex": "#ffedd5"
+      },
+      "$description": "Data colour, orange (zeiteisen: Pr laboratory): block fill."
+    },
+    "kind-pr-border": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9176, 0.3451, 0.0471],
+        "hex": "#ea580c"
+      },
+      "$description": "Border of a kind-pr block."
+    },
+    "kind-tu": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9412, 0.9922, 0.9804],
+        "hex": "#f0fdfa"
+      },
+      "$description": "Data colour, teal (zeiteisen: Tu tutorial): block fill."
+    },
+    "kind-tu-border": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.0784, 0.7216, 0.651],
+        "hex": "#14b8a6"
+      },
+      "$description": "Border of a kind-tu block."
+    },
+    "kind-s": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9608, 0.9529, 1],
+        "hex": "#f5f3ff"
+      },
+      "$description": "Data colour, violet (zeiteisen: S seminar): block fill."
+    },
+    "kind-s-border": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.5451, 0.3608, 0.9647],
+        "hex": "#8b5cf6"
+      },
+      "$description": "Border of a kind-s block."
+    },
+    "kind-wf": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.9686, 0.9961, 0.9059],
+        "hex": "#f7fee7"
+      },
+      "$description": "Data colour, lime (zeiteisen: WF elective): block fill."
+    },
+    "kind-wf-border": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.3961, 0.6392, 0.051],
+        "hex": "#65a30d"
+      },
+      "$description": "Border of a kind-wf block."
+    },
+    "block-kind": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.251, 0.251, 0.251],
+        "hex": "#404040"
+      },
+      "$description": "Second line inside a coloured block (zeiteisen: the kinds)."
+    },
+    "block-room": {
+      "$value": {
+        "colorSpace": "srgb",
+        "components": [0.3216, 0.3216, 0.3216],
+        "hex": "#525252"
+      },
+      "$description": "Third line inside a coloured block (zeiteisen: the room, mono)."
     }
   }
 }

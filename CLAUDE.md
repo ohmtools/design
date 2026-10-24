@@ -20,21 +20,28 @@ Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
   result. CI runs `npm run check` and `npm test`.
 - No npm dependencies: other repos run `bin/ohmtools-design.mjs` straight
   from git (`npx github:ohmtools/design check …`).
+- The design is zeiteisen's redesign (base-vega with its own theme, user
+  decision). Its sources: the claude.ai doc "Zeiteisen-Redesign:
+  Designentscheidungen" and the "Zeiteisen Redesign" canvas.
 
 ## Details
 
 - Tokens are DTCG 2025.10 (`$type`, `$value`, `$description`). Colours are
-  OKLCH with exactly the numbers shadcn writes; light and dark name the same
-  colours in the same order, descriptions only in `light`. `base` holds what
-  does not change with the mode, including the tint parameters (zeiteisen's
-  `src/lib/tint.ts`).
+  what zeiteisen's `src/index.css` writes: sRGB (`hex` plus matching
+  `components`, checked on load) for the theme, OKLCH with shadcn's numbers
+  for `chart-*`. Light and dark name the same colours in the same order,
+  descriptions (and the Tailwind name where it differs, `$extensions`
+  `dev.ohmtools.tailwind`: `accent-red` -> `red`) only in `light`. shadcn's
+  colours end with `sidebar-ring`, the design's own follow. `base` holds
+  what does not change with the mode: fonts, radius, spacing, motion.
 - `shadcn/index.css` is what `shadcn init` writes for
-  `shadcn/components.json` plus the Red theme, plus the `desktop` variant of
-  the app shell. zeiteisen's `src/index.css` has the same theme
-  (`ohmtools-design check` passes there). When shadcn changes its output
-  (new variables, other values), change the template in
-  `scripts/outputs.mjs` and the tokens together.
-- Hex values are computed (OKLCH → sRGB, clipped to the gamut), tested
+  `shadcn/components.json` with the design's theme, the `compact` / `wide` /
+  `short` variants of the app shell and the reduced-motion rule.
+  zeiteisen's `src/index.css` is the same apart from comments and its
+  `motion.css` import (`ohmtools-design check` passes there; diff the two
+  after a change). When shadcn changes its output (new variables), change
+  the template in `scripts/outputs.mjs` and the tokens together.
+- OKLCH hex values are computed (OKLCH → sRGB, clipped to the gamut), tested
   against Tailwind's published hex values (`test/tokens.test.mjs`).
 - `examples/index.html` rebuilds the look on `dist/tokens.css` alone; check
   it at 1440px and 360px, light and dark, after changing tokens or rules

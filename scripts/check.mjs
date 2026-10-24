@@ -9,10 +9,11 @@ import { cssColor, cssDimension, cssFont, loadTokens, root } from "./tokens.mjs"
 
 // `--name: value` declarations of the blocks that hold the theme: `:root`
 // (light; dark inside a `prefers-color-scheme: dark` media query) and `.dark`.
-// `--font-sans` counts wherever it is declared (shadcn puts it in `@theme`).
+// `--font-sans` and `--font-mono` count wherever they are declared (shadcn puts
+// them in `@theme`).
 export function themeDeclarations(css) {
   const text = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  const found = { light: new Map(), dark: new Map(), font: null };
+  const found = { light: new Map(), dark: new Map(), font: null, mono: null };
   const stack = [];
   let buffer = "";
   const declare = (raw) => {
@@ -20,6 +21,7 @@ export function themeDeclarations(css) {
     if (!match) return;
     const [, name, value] = match;
     if (name === "font-sans") found.font = value.trim();
+    if (name === "font-mono") found.mono = value.trim();
     const selector = stack.at(-1);
     const darkMedia = stack.some((p) => /prefers-color-scheme\s*:\s*dark/.test(p));
     if (selector === ":root") (darkMedia ? found.dark : found.light).set(name, value.trim());
@@ -43,8 +45,16 @@ export function themeDeclarations(css) {
   return found;
 }
 
-// Colours compare by value (`/ 10%` equals `/ 0.1`), everything else by text
-// with whitespace and number formatting evened out.
+// Colours compare by value (`/ 10%` equals `/ 0.1`, `#FFF` equals `#ffffff`),
+// everything else by text with whitespace and number formatting evened out.
+function parseHex(value) {
+  const m = value.trim().match(/^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i);
+  if (!m) return null;
+  const digits = m[1].length <= 4 ? [...m[1]].map((d) => d + d).join("") : m[1];
+  const bytes = digits.match(/../g).map((b) => parseInt(b, 16));
+  return [...bytes.slice(0, 3), bytes.length === 4 ? bytes[3] : 255];
+}
+
 function parseOklch(value) {
   const m = value.match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)(%?))?\s*\)$/i);
   if (!m) return null;
@@ -56,6 +66,9 @@ export function sameValue(actual, expected) {
   const a = parseOklch(actual);
   const e = parseOklch(expected);
   if (a && e) return a.every((n, i) => Math.abs(n - e[i]) < 1e-6);
+  const ha = parseHex(actual);
+  const he = parseHex(expected);
+  if (ha && he) return ha.every((n, i) => n === he[i]);
   const even = (v) =>
     v
       .replace(/\s+/g, " ")
@@ -79,9 +92,15 @@ export function checkCss(css, t = loadTokens()) {
   for (const c of t.light) expect("light", c.name, cssColor(c.value));
   for (const c of t.dark) expect("dark", c.name, cssColor(c.value));
   expect("light", "radius", cssDimension(t.radius));
-  const font = cssFont(t.font);
-  if (found.font === null) problems.push(`--font-sans missing, expected ${font}`);
-  else if (!sameValue(found.font, font)) problems.push(`--font-sans is ${found.font}, expected ${font}`);
+  for (const [key, name, families] of [
+    ["font", "font-sans", t.font],
+    ["mono", "font-mono", t.mono],
+  ]) {
+    const expected = cssFont(families);
+    const actual = found[key];
+    if (actual === null) problems.push(`--${name} missing, expected ${expected}`);
+    else if (!sameValue(actual, expected)) problems.push(`--${name} is ${actual}, expected ${expected}`);
+  }
   return problems;
 }
 

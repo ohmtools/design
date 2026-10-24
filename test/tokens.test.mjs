@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { hex, loadTokens, tints } from "../scripts/tokens.mjs";
+import { hex, loadTokens, splitShadcn } from "../scripts/tokens.mjs";
 
 const oklch = (...components) => ({ colorSpace: "oklch", components });
 
@@ -25,12 +25,12 @@ test("hex carries alpha as a fourth byte", () => {
   assert.equal(hex({ ...oklch(1, 0, 0), alpha: 0.1 }), "#ffffff1a");
 });
 
-test("tints step down from primary like zeiteisen's tint.ts", () => {
+test("an sRGB token is its hex", () => {
   const t = loadTokens();
-  const [one, , three] = tints(t.light, t.tint);
-  assert.deepEqual(one.value.components, [0.45, 0.173, 27.518]);
-  assert.deepEqual(three.value.components, [0.34, 0.093, 27.518]);
-  assert.equal(tints(t.light, t.tint).length, t.tint.steps - 1);
+  const value = (name) => t.light.find((c) => c.name === name).value;
+  assert.equal(hex(value("accent-red")), "#dc2626");
+  assert.equal(hex(value("background")), "#ffffff");
+  assert.equal(t.dark.find((c) => c.name === "background").value.hex, "#000000");
 });
 
 test("light and dark name the same colours", () => {
@@ -40,4 +40,13 @@ test("light and dark name the same colours", () => {
     t.dark.map((c) => c.name),
   );
   assert.ok(t.light.every((c) => c.description), "every light colour has a $description");
+});
+
+test("the design's own colours follow shadcn's", () => {
+  const { shadcn, own } = splitShadcn(loadTokens().light);
+  assert.equal(shadcn.at(-1).name, "sidebar-ring");
+  assert.deepEqual(
+    own.slice(0, 4).map((c) => c.utility),
+    ["grid", "hour", "red", "red-foreground"],
+  );
 });

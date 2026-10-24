@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { test } from "node:test";
-import { checkComponentsJson, checkCss, checkUppercase, themeDeclarations } from "../scripts/check.mjs";
+import {
+  checkComponentsJson,
+  checkCss,
+  checkUppercase,
+  sameValue,
+  themeDeclarations,
+} from "../scripts/check.mjs";
 import { generated } from "../scripts/generated.mjs";
 import { root } from "../scripts/tokens.mjs";
 
@@ -20,11 +26,13 @@ test("the generated theme files pass the check", () => {
 
 test("the check finds a changed and a missing colour", () => {
   const css = read("shadcn/index.css")
-    .replace("--primary: oklch(0.505 0.213 27.518);", "--primary: oklch(0.205 0 0);")
-    .replace(/\n {2}--ring: [^;]+;/, "");
+    .replace("--primary: #0a0a0a;", "--primary: #dc2626;")
+    .replace(/\n {2}--ring: [^;]+;/, "")
+    .replace(/\n {2}--font-mono: [^;]+;/, "");
   assert.deepEqual(checkCss(css), [
-    "light: --primary is oklch(0.205 0 0), expected oklch(0.505 0.213 27.518)",
-    "light: --ring missing, expected oklch(0.708 0 0)",
+    "light: --primary is #dc2626, expected #0a0a0a",
+    "light: --ring missing, expected #a3a3a3",
+    '--font-mono missing, expected "Geist Mono Variable", ui-monospace, monospace',
   ]);
 });
 
@@ -33,22 +41,28 @@ test("dark comes from .dark and from a prefers-color-scheme :root", () => {
     :root { --a: 1; }
     .dark { --b: 2; }
     @media (prefers-color-scheme: dark) { :root { --c: 3; } }
-    @theme inline { --font-sans: Inter; --color-a: var(--a); }`);
+    @theme inline { --font-sans: Geist; --font-mono: Mono; --color-a: var(--a); }`);
   assert.deepEqual([...found.light], [["a", "1"]]);
   assert.deepEqual([...found.dark], [["b", "2"], ["c", "3"]]);
-  assert.equal(found.font, "Inter");
+  assert.equal(found.font, "Geist");
+  assert.equal(found.mono, "Mono");
 });
 
-test("alpha compares by value", () => {
-  const css = read("dist/tokens.css").replace("oklch(1 0 0 / 10%)", "oklch(1 0 0 / 0.1)");
+test("colours compare by value", () => {
+  const css = read("dist/tokens.css")
+    .replace("--background: #ffffff;", "--background: #FFF;")
+    .replace("--chart-1: oklch(0.808 0.114 19.571);", "--chart-1: oklch(0.808 0.114 19.571 / 100%);");
   assert.deepEqual(checkCss(css), []);
+  assert.equal(sameValue("#1f1f1f", "#1f1f1fff"), true);
+  assert.equal(sameValue("#000000", "#000"), true);
+  assert.equal(sameValue("#000000", "#0a0a0a"), false);
 });
 
 test("components.json: another style is reported", () => {
   const config = JSON.parse(read("shadcn/components.json"));
   config.style = "new-york";
   assert.deepEqual(checkComponentsJson(JSON.stringify(config)), [
-    'style is "new-york", expected "base-sera"',
+    'style is "new-york", expected "base-vega"',
   ]);
 });
 

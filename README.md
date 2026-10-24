@@ -4,13 +4,16 @@
 > Konfiguration und Dokumentation sind mit
 > [Claude Code](https://claude.com/claude-code) entstanden.
 
-Ein Erscheinungsbild für alle Apps, Webseiten und Dokumente von ohmtools:
-shadcn/ui `base-sera` mit dem Theme Red auf Neutral, Inter, eckige Ecken,
-keine Boxen, Rot als einzige Akzentfarbe, hell und dunkel nach Einstellung des
-Geräts. Die Regeln stehen in [DESIGN.md](DESIGN.md), die Werte in
-[`tokens/`](tokens/) (Design-Token-Format, Farben in OKLCH); alles andere wird
-daraus erzeugt. Referenzumsetzung:
-[zeiteisen](https://github.com/ohmtools/zeiteisen).
+Ein Erscheinungsbild für alle Apps, Webseiten und Dokumente von ohmtools, seit
+dem Redesign von [zeiteisen](https://github.com/ohmtools/zeiteisen) (der
+Referenzumsetzung): shadcn/ui `base-vega` mit eigenem Theme, Geist und Geist
+Mono, OLED-Schwarz und Weiß als Grund, ein neutrales `primary`, Rot
+(`accent-red`) als einzige Akzentfarbe, Daten nach Art gefärbt, Rundungen von
+6, 8 und 10px, keine Boxen, drei Stufen von Telefon bis Desktop, eine
+Bewegungskurve, hell und dunkel nach Einstellung des Geräts. Die Regeln stehen
+in [DESIGN.md](DESIGN.md), die Werte in [`tokens/`](tokens/)
+(Design-Token-Format, Farben als sRGB-Hex, die Diagrammfarben in OKLCH); alles
+andere wird daraus erzeugt.
 
 | Pfad | Inhalt |
 | --- | --- |
@@ -19,7 +22,7 @@ daraus erzeugt. Referenzumsetzung:
 | [`shadcn/components.json`](shadcn/components.json) | shadcn-Konfiguration |
 | [`shadcn/index.css`](shadcn/index.css) | `src/index.css` einer shadcn-App (erzeugt) |
 | [`dist/tokens.css`](dist/tokens.css) | CSS-Variablen für Seiten ohne shadcn (erzeugt) |
-| [`dist/tokens.json`](dist/tokens.json) | Alle Farben je Modus als `oklch()` und Hex, für alles andere (erzeugt) |
+| [`dist/tokens.json`](dist/tokens.json) | Alle Farben je Modus als CSS-Wert und Hex, dazu Schriften, Abstände und Bewegung, für alles andere (erzeugt) |
 | [`dist/ohmtools-colors.sty`](dist/ohmtools-colors.sty) | Die Farben für LaTeX (erzeugt) |
 | [`assets/app-icon.svg`](assets/app-icon.svg) | Vorlage für App-Icons |
 | [`examples/index.html`](examples/index.html) | Das Erscheinungsbild nur mit `dist/tokens.css` nachgebaut |
@@ -31,11 +34,14 @@ daraus erzeugt. Referenzumsetzung:
 1. Das Projekt nach shadcns [Vite-Anleitung](https://ui.shadcn.com/docs/installation/vite)
    aufsetzen, dann `components.json` und `src/index.css` durch
    [`shadcn/components.json`](shadcn/components.json) und
-   [`shadcn/index.css`](shadcn/index.css) ersetzen. App-eigenes CSS kommt ans
-   Ende von `src/index.css`.
-2. Komponenten mit `npx shadcn@latest add <name>` hinzufügen und `uppercase`
+   [`shadcn/index.css`](shadcn/index.css) ersetzen und
+   `@fontsource-variable/geist` sowie `@fontsource-variable/geist-mono`
+   installieren. App-eigenes CSS kommt ans Ende von `src/index.css`.
+2. Komponenten mit `npx shadcn@latest add <name>` hinzufügen, `uppercase`
    sowie `tracking-wider` / `tracking-widest` aus den erzeugten Dateien
-   entfernen.
+   entfernen und die Handanpassungen aus DESIGN.md, „Components“, einbauen
+   (roter Lösch-Knopf, Dialog als Blatt von unten auf dem Telefon, gleitender
+   Tab-Indikator, …).
 3. Dunkelmodus: `public/dark.js` und ein `ThemeProvider`, siehe DESIGN.md,
    „Light and dark“. Kein Umschalter für das Farbschema.
 4. In der CI prüfen, dass das Theme unverändert bleibt:
@@ -56,13 +62,14 @@ prüft die Kopie und das eigene CSS der Seite ebenfalls.
 [`dist/ohmtools-colors.sty`](dist/ohmtools-colors.sty) neben die `.tex`-Datei
 kopieren, `\usepackage{ohmtools-colors}`, dann die Namen verwenden: `ohm` plus
 der Token in PascalCase (`primary` → `ohmPrimary`, `muted-foreground` →
-`ohmMutedForeground`, `chart-1` → `ohmChart1`). Papier ist hell, deshalb sind
-das die Werte des hellen Modus.
+`ohmMutedForeground`, `accent-red` → `ohmAccentRed`, `kind-pr` → `ohmKindPr`).
+Papier ist hell, deshalb sind das die Werte des hellen Modus.
 
 ### Alles andere
 
 [`dist/tokens.json`](dist/tokens.json) enthält jede Farbe je Modus als
-`oklch()` und sRGB-Hex, dazu Schrift und Abstände und wofür jede Farbe da ist.
+CSS-Wert und sRGB-Hex, dazu Schriften, Radius, Abstände, Bewegung und wofür
+jede Farbe da ist.
 
 ### Claude Code
 
@@ -72,9 +79,9 @@ In die `CLAUDE.md` des Projekts aufnehmen:
 ## Design
 
 Folgt dem ohmtools-Design: https://github.com/ohmtools/design, Regeln in dessen
-DESIGN.md (shadcn base-sera, Red auf Neutral, Inter; keine Großbuchstaben,
-keine Boxen, kein Umschalter für das Farbschema). Farben nur über dessen
-Tokens. Vor jeder sichtbaren Änderung DESIGN.md lesen; eine Regel, die sich
+DESIGN.md (shadcn base-vega mit dessen Theme, Geist, Rot nur als Akzent;
+keine Großbuchstaben, keine Boxen, kein Umschalter für das Farbschema). Farben
+nur über dessen Tokens. Vor jeder sichtbaren Änderung DESIGN.md lesen; eine Regel, die sich
 ändern soll, wird zuerst dort geändert, für alle Apps.
 ```
 
@@ -84,7 +91,8 @@ Tokens. Vor jeder sichtbaren Änderung DESIGN.md lesen; eine Regel, die sich
 Projekts aufgerufen, endet mit 1, wenn eine Datei dem Design nicht folgt:
 
 - eine CSS-Datei, die `--primary` deklariert, muss alle Theme-Farben, den
-  Radius und die Schrift unverändert enthalten, hell (`:root`) und dunkel
+  Radius und beide Schriften (`--font-sans`, `--font-mono`) unverändert
+  enthalten (Farben werden nach Wert verglichen: `#FFF` gleich `#ffffff`), hell (`:root`) und dunkel
   (`.dark`, oder `:root` in einer Media-Query `prefers-color-scheme: dark`);
   app-eigene Variablen sind erlaubt;
 - `components.json` muss denselben Stil, dieselbe Grundfarbe, dieselben Icons
