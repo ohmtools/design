@@ -288,6 +288,9 @@ keep their own icons.
   potentiometer. Every line ends at a terminal of the omega or at a pad, and
   none crosses the omega. The circuit belongs to the icon only.
 - **Favicon** (`favicon.svg`): the mark alone with a black halo.
+- **Social preview** (`social-preview.png`, 1280 × 640, GitHub's size): the
+  link preview rules above with the icon, "OhmTools" as in the wordmark, the
+  tagline and `github.com/ohmtools` in `#A3A3A3`.
 - Never recoloured, outlined, rotated or set in another font.
 
 ## Accessibility and checks

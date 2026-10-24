@@ -25,7 +25,7 @@ andere wird daraus erzeugt.
 | [`dist/tokens.json`](dist/tokens.json) | Alle Farben je Modus als CSS-Wert und Hex, dazu Schriften, Abstände und Bewegung, für alles andere (erzeugt) |
 | [`dist/ohmtools-colors.sty`](dist/ohmtools-colors.sty) | Die Farben für LaTeX (erzeugt) |
 | [`assets/app-icon.svg`](assets/app-icon.svg) | Vorlage für App-Icons |
-| [`assets/logo/`](assets/logo/) | Das Logo der Organisation: Icon, Favicon, Zeichen und Wortmarke für hellen und dunklen Grund, Avatar als PNG |
+| [`assets/logo/`](assets/logo/) | Das Logo der Organisation: Icon, Favicon, Zeichen und Wortmarke für hellen und dunklen Grund, Avatar und Vorschaubild (1280 × 640) als PNG |
 | [`examples/index.html`](examples/index.html) | Das Erscheinungsbild nur mit `dist/tokens.css` nachgebaut |
 
 ## Verwendung
