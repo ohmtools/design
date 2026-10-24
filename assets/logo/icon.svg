@@ -6,8 +6,9 @@
   <rect x="0" y="0" width="512" height="512" rx="112" ry="112" fill="#000000"/>
   <rect x="0.75" y="0.75" width="510.5" height="510.5" rx="111.3" ry="111.3" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="1.5"/>
 
-  <!-- The drawing, centred as a whole (y 58 to 396 moved down by 29). -->
-  <g transform="translate(0 29)">
+  <!-- Moved down by 15: halfway between the omega centred (0, how it reads
+       from afar) and the whole drawing centred (29, up close). -->
+  <g transform="translate(0 15)">
   <!-- Circuit: capacitor (left), switch, series resistor and wiper (right,
        top). Every line ends at a terminal of the omega or at a pad. -->
   <path d="M128 366H88L56 334V236M56 220V144L96 104M384 366H416L448 334V272M448 224V120L400 72H256V92" fill="none" stroke="#333333" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
