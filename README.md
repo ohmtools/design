@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo/icon.svg" alt="OhmTools" width="128">
+</p>
+
 # ohmtools design
 
 > **Hinweis:** Dieses Projekt wurde größtenteils mit KI generiert: Code,
