@@ -262,6 +262,27 @@ Flat, in the theme's colours: no gradients, no metal.
   borders, `#1F1F1F` lines). German only: a URL has one card, it cannot
   follow the viewer's language.
 
+## ohmtools logo
+
+The organisation's own sign, in [`assets/logo/`](assets/logo/); the apps
+keep their own icons.
+
+- **The mark**: an omega drawn as one 40px stroke (at 512) with a terminal
+  at each foot, the left one in the ink, the right one `accent-red`. Ink is
+  `#FAFAFA` on dark grounds, `#0A0A0A` on light ones
+  (`mark-on-dark.svg`, `mark-on-light.svg`).
+- **The wordmark**: the mark, then "OhmTools" (that spelling), "Ohm" in Geist
+  bold and "Tools" in Geist light, both in the ink; never red, never another
+  weight (`wordmark-on-dark.svg`, `wordmark-on-light.svg`, the text as
+  paths).
+- **The icon** (`icon.svg`, `avatar-512.png` full-bleed for GitHub): the app
+  icon template with the mark on a circuit board in `#333333`: a capacitor,
+  a switch, a series resistor and a wiper that makes the omega a
+  potentiometer. Every line ends at a terminal of the omega or at a pad, and
+  none crosses the omega. The circuit belongs to the icon only.
+- **Favicon** (`favicon.svg`): the mark alone with a black halo.
+- Never recoloured, outlined, rotated or set in another font.
+
 ## Accessibility and checks
 
 - Real buttons, links and labels; icon-only buttons named; what a colour or a
