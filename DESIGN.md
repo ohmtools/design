@@ -30,6 +30,12 @@ where an app and this file disagree, this file wins and the app gets fixed.
   `#dc2626` in both modes), and only for what must stand out: today, the
   now-line, the picked day, the app tile, a dot for "update waiting", and the
   fill of destructive buttons. Never decoration, never a second red.
+- **In documents and reading pages red marks what is added** to an original
+  text or to a task: an added passage ("Ergänzung"), a solution, a mark drawn
+  into a figure or a form. Original text and original figures carry no red.
+  See "Documents" and "Reading pages".
+- Red text uses `destructive` (`#dc2626` light, `#ef4444` dark, readable on
+  black); red fills, lines and dots use `accent-red`.
 - `destructive`: red text for errors, invalid fields and destructive menu
   items. A destructive **button** is filled `accent-red` with
   `accent-red-foreground`.
@@ -74,7 +80,9 @@ where an app and this file disagree, this file wins and the app gets fixed.
 
 - **Geist** for text and headings (`--font-heading` is `--font-sans`),
   **Geist Mono** only for times, rooms, dates, week numbers, group numbers,
-  version numbers and file endings. Bundled with the app
+  version numbers and file endings (documents and reading pages add the
+  numbers named there: points, pages, values, chapter and equation
+  numbers). Bundled with the app
   (`@fontsource-variable/geist`, `@fontsource-variable/geist-mono`), never
   from a font CDN: apps run offline. Other toolchains use Geist where they
   have it, else their sans-serif.
@@ -87,6 +95,8 @@ where an app and this file disagree, this file wins and the app gets fixed.
   | Blocks in a grid, times, hints, captions, badges | 12px (`text-xs`) | normal or medium |
   | Input, text area | 16px on phones (keeps iOS from zooming in), 14px from 768px (`text-base md:text-sm`) | normal |
 
+- Reading pages (long text, see "Reading pages") and documents add larger
+  headings for their content; the shell around them keeps the three sizes.
 - **No uppercase text and no wide letter spacing** (`uppercase`,
   `tracking-wider`, `tracking-widest`). Strip them after every `shadcn add`.
 - Codes and names are never cut short or broken inside a word; what does not
@@ -228,11 +238,213 @@ shadcn generates them; these hand-edits are part of the design (zeiteisen's
 
 ## Documents (PDF, LaTeX, slides)
 
-The same rules on paper: light mode, Geist (or the toolchain's sans-serif)
-with Geist Mono for times, dates and numbers, `accent-red` as the only accent
-([`dist/ohmtools-colors.sty`](dist/ohmtools-colors.sty) for LaTeX), data
-colours for categories, no uppercase or letter-spaced labels, divider lines
-instead of boxes, the radii above.
+The same rules on paper, in the style of a datasheet: tables, lines and
+plain type. The reference is the Lernhelfer's worksheet
+(`ohmtools/claude-plugins`, `lernhelfer/skills/lernen/vorlagen/`).
+
+### Basics
+
+- Light only, white paper. Colours only by token name
+  ([`dist/ohmtools-colors.sty`](dist/ohmtools-colors.sty) for LaTeX).
+- Geist for text (the toolchain's sans-serif where it has no Geist, e.g.
+  Helvetica in pdfTeX). Geist Mono (else the toolchain's monospace) for
+  numbers read as data: points, page numbers, times, dates, values with
+  units in tables, file names. Labels and words stay in Geist.
+- Formulas in the toolchain's math font (italic variables, upright units and
+  numbers, `,` as decimal mark), never in Geist.
+- **No frame around the page, no coloured bars or bands, no boxes, no
+  fills.** Structure comes from lines and space: 1px `foreground` lines for
+  the strong edges (under the running head, above the footer, under a table
+  head, at a table's end), 1px `border` lines between rows and parts.
+- Radii as in the app: 6px for badges and number tiles, 4px for check boxes.
+- Badges: 12px medium, 20px high, 8px side padding, 6px radius. Outline
+  (1px `border`) for facts ("10 Punkte"), secondary (`muted` fill, `border`)
+  for "Angabe", **filled `accent-red` with `accent-red-foreground`** for
+  "Lösung" (and "Ergänzung" on reading pages). No other badge is red.
+
+### Running head and footer
+
+- Head: left "OhmTools" in semibold with the product in `muted-foreground`
+  ("OhmTools Lernhelfer"); right the kind of document in `muted-foreground`
+  ("Übungsblatt") and the badge of the sheet ("Angabe" or "Lösung"). A 1px
+  `foreground` line below.
+- Footer: a 1px `foreground` line above; left the subject and the sheet in
+  `muted-foreground` ("Grundlagen der Elektrotechnik · Angabe"), right
+  "Seite 2 / 5" with the numbers in mono, `foreground`.
+
+### Cover sheet
+
+- Title (the subject) 46px (about 34pt) bold, tracking slightly tight
+  (-0.025em), then a muted line "Übungsblatt · 4 Aufgaben · 24 Punkte" at
+  18px.
+- Below it two columns, 40px apart:
+  - "Auf einen Blick" (200px): rows split by `border` lines, each a 12px
+    muted label above its value: Bearbeitungszeit, Gesamtpunkte, Aufgaben
+    (values mono 18px medium), Hilfsmittel (text), Erstellt (date and time
+    mono).
+  - The tasks as a table "Nr. | Aufgabe | Punkte | Erreicht", the last
+    column left empty to fill in; a "Summe" row in bold whose "Erreicht"
+    cell is a 2px `accent-red` line to write on. Below it "Hinweise" as a
+    list with 6px round `ring` bullets.
+  - Section headings of the cover sheet ("Auf einen Blick", "Hinweise"):
+    14px bold with a 2px `accent-red` line below.
+
+### Task pages
+
+- Head of a task: "Aufgabe 1" 12px muted (number mono), the title 28px bold
+  with tight tracking, right an outline badge "10 Punkte".
+- Text 14px. Given values as a table "Symbol | Bedeutung | Wert" (symbol in
+  the math font, values mono and right-aligned), then a line "Gesucht" with
+  the quantities. A figure goes to the right of it, with the caption
+  "**Abb. 1** RC-Glied beim Aufladen" (number semibold `foreground`, text
+  muted, 12px).
+- Parts one below the other, split by `border` lines with 14px above and
+  below: the letter in a 22px tile (`primary` fill, `primary-foreground`,
+  6px radius, 12px semibold), the question, right the points "2 P" (mono
+  12px).
+- Answer formats: radio circles 16px and check boxes 16px (4px radius), both
+  with a 1.5px `foreground` outline; tables to complete with empty cells;
+  diagrams on millimetre paper (below).
+- No written hints on the sheet or in the solution.
+
+### Solutions
+
+- A solution stands right below its part, indented to the question text.
+  It starts with the "Lösung" badge (red); further lines of the same part
+  align with it without repeating the badge.
+- The working in the math font in `foreground`; the result bold in
+  `destructive`; the points of each step at the right in mono 12px,
+  `destructive`.
+- Marks in red (`accent-red`): the cross in a check box, the dot in a radio
+  circle (8px), missing table values (semibold, `destructive`), and
+  everything drawn into a diagram: the curve 2px, construction lines 1px
+  dashed, a 3.5px dot with a direct label ("τ = 47 ms").
+
+### Figures
+
+- Diagrams to draw into are millimetre paper: minor lines `grid`, major
+  lines (every fifth) `border`, axes 1.2px `foreground` with filled arrow
+  heads, tick labels mono 12px `hour`, axis labels in the math font
+  ("*t* in ms"). Check `grid` on a printout; if it vanishes, the minor lines
+  get the `border` colour and the major ones `ring`.
+- Circuits after DIN EN 60617 (the worksheet's rules), 1.5px `foreground`,
+  labels in the math font, voltage and current arrows straight with filled
+  heads.
+- Curves in `foreground`, a second one dashed; no legend, labels at the
+  curve.
+
+## Reading pages
+
+Web pages that are read rather than worked in: the Lernhelfer's scripts
+(`ohmtools/lernhelfer-skript`), one chapter per page, original text plus what
+the Lernhelfer adds. The app shell, components and colours stay as above;
+these rules come on top.
+
+### Shell
+
+- Header (56px): the title of the script (16px semibold), an outline badge
+  "Kapitel 2 / 3", then on the right the view's tabs "Mit Ergänzungen | Nur
+  Original" (`TabsList`) and the icon buttons "Auf dieser Seite" and
+  "Einstellungen" (settings last, an open panel's button filled `accent`).
+- Wide: three columns, each scrolling for itself.
+  - Left, 280px, `border` line right: a search `Input` in a top section,
+    then the chapter list as sidebar buttons (32px, 8px radius, active
+    `accent` fill and medium): chapter numbers mono 12px muted, sections
+    indented 24px without numbers, the questions page with a red "Ergänzung"
+    badge at the right. A muted 12px group label "Kapitel" above.
+  - Middle: the page, at most 720px wide with 56px side padding, left
+    aligned.
+  - Right, 280px: "Auf dieser Seite" (14px medium) over a list with a 1px
+    `border` line on its left; the current entry `foreground` and medium with
+    a 1px `foreground` line, the others muted; Ergänzungen indented with a
+    6px `accent-red` dot. "Einstellungen" opens as a 340px panel in its place.
+- Narrow: header with the title and a search button; content; a bottom bar
+  with the tabs "Skript | Inhalt | Einstellungen" (`TabsList`, 40px, full
+  width, safe area below). "Inhalt" holds the search (16px input) with its
+  hits and the chapter list (44px rows).
+- Settings panel: a header row "Einstellungen" with a close button, then
+  sections split by lines: "Ansicht" (radio group "Mit Ergänzungen" / "Nur
+  Original", each with a muted one-line description), "Darstellung" ("Hell
+  oder dunkel folgt dem Gerät."), "Über dieses Skript" (a table: Original
+  with the file name in mono, Umfang, Erstellt in mono) and an outline link
+  button "Vorlage auf GitHub" with an external-link icon.
+
+### Type
+
+shadcn's typography, for the content only:
+
+| Use | Wide | Narrow |
+| --- | --- | --- |
+| Chapter heading (h2), 1px `border` line below, 8px gap | 30/36px semibold, tracking -0.025em | 26/32px |
+| Section heading (h3) | 24/32px semibold, tracking -0.025em | 20/28px |
+| Body text | 16/28px | 16/26px |
+| Lead (intro of a page) | 18/28px muted | 16/26px muted |
+| Tables, questions' controls, Ergänzung headers | 14/20px | 14/20px |
+| Meta lines, captions | 12/20px muted | 12/20px muted |
+
+- Display formulas centred, the equation number right-aligned in mono 12px
+  muted ("(2.1)").
+- A page break of the original is a meta line "Seite 4 im Original" (number
+  mono) followed by a 1px `border` line to the right edge.
+
+### Original and Ergänzung
+
+- Original text and original figures stay unmarked, word for word. A figure
+  of the original keeps its look (a scan is inverted in dark mode) and gets
+  the caption "**Abb. 2.2** …" (14px, number semibold `foreground`, text
+  muted, units mono).
+- **Every Ergänzung is a block in the text flow**, never beside it in a
+  margin, 24px from the text around it:
+  - Header row: the badge "Ergänzung" (`accent-red` fill,
+    `accent-red-foreground`), the title in 14px semibold ("Variablen in
+    Gleichung 2.1", "Denkanstoß", "Zur Abbildung 2.2"), at the right
+    optionally an outline badge for the kind ("Interaktiv", "Grafik").
+    Below it a 2px `accent-red` line, 8px under the text.
+  - Content: tables 14/20px, prose 16/28px, a question 16/24px medium.
+    "Antwort zeigen" is an outline button (32px).
+- An annotation of a single word: the word gets a 1.5px dotted `accent-red`
+  underline and is a button; it opens a popover (`popover`, ring, shadow,
+  8px radius, 280px) headed by the "Ergänzung" badge and "Anmerkung".
+- "Nur Original" removes every Ergänzung and annotation; the page then shows
+  the original alone.
+
+### Questions page
+
+- At the end of every chapter, one page "Wiederholungsfragen": above the
+  heading a meta line with the "Ergänzung" badge and "Zu Kapitel 2 · Das
+  RC-Glied", the lead "Antworte erst selbst, dann vergleiche."
+- Each question: header row with the number (mono 14px semibold) and an
+  outline badge for its kind ("Rechnen", "Erklären", "Auswahl"), the 2px
+  `accent-red` line below, the question 16/24px medium.
+- Rechnen: an `Input` (mono, 140px) with the unit, a primary button
+  "Prüfen". Right: a check icon and "Richtig: 1000 Hz. …" in `foreground`.
+  Wrong: the input border `destructive`, an x icon and "Noch nicht. …" in
+  `destructive`.
+- Erklären: a `Textarea` "Deine Antwort", an outline button "Antwort
+  zeigen" / "Antwort verbergen", the answer below with a 2px `border` line on
+  its left.
+- Auswahl: radio rows split by `border` lines; after a choice an outline
+  badge "richtig" with a check at the right answer, a badge "falsch" with an
+  x (`destructive` text, `destructive` border at 30%) at a wrong choice, and
+  that option's explanation muted below it; the general explanation after
+  the list.
+- At the end of every page: an outline button back (chevron left, the
+  previous page's name) and a primary button forward (the next one's name,
+  chevron right), after a 1px `border` line.
+
+### Interactive parts and graphs
+
+- Controls are the app's: `Slider`, `ToggleGroup` (outline) for a switch
+  ("offen | geschlossen"), a parameter table "Parameter | Wert" with the
+  sliders in it and the values in mono, the computed value (τ = RC) in the
+  last row in semibold.
+- Graphs on millimetre paper as in documents; the curve `chart-3` (light) /
+  `chart-2` (dark) 2.5px, reference lines (63 %) `muted-foreground` dashed
+  with a mono label at their end, a marked point as a dot in the curve's
+  colour with a direct label (τ). No legend.
+- Search hits: the section as a 12px muted line (with the red "Ergänzung"
+  badge when the hit lies in one), then the sentence with the term bold and
+  underlined.
 
 ## App icon, favicon, link preview
 

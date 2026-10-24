@@ -15,6 +15,11 @@ Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
   `src/components/ui/NOTES.md`, `src/index.css`). The other repos (faltung,
   the LaTeX worksheet in claude-plugins) do not follow the design yet: never
   take a rule or a value from them.
+- **Documents and reading pages** ("Documents", "Reading pages" and the red
+  rule under "Colour" in `DESIGN.md`) come from the user's design canvas
+  "Übungsblatt und Skript", page "A3 Datenblatt" (user decision, 2026-10-24).
+  The Lernhelfer's worksheet (claude-plugins) and lernhelfer-skript are to
+  follow them; until they do, the canvas wins over both.
 - Never hand-edit a generated file: edit `tokens/` (or `DESIGN.md` outside
   the table, or `scripts/outputs.mjs`), run `npm run build`, commit the
   result. CI runs `npm run check` and `npm test`.
