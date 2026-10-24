@@ -286,7 +286,8 @@ keep their own icons.
   icon template with the mark on a circuit board in `#333333`: a capacitor,
   a switch, a series resistor and a wiper that makes the omega a
   potentiometer. Every line ends at a terminal of the omega or at a pad, and
-  none crosses the omega. The circuit belongs to the icon only.
+  none crosses the omega. Circuit and omega are centred together, the
+  circuit belongs to the icon only.
 - **Favicon** (`favicon.svg`): the mark alone with a black halo.
 - **Social preview** (`social-preview.png`, 1280 × 640, GitHub's size): the
   link preview rules above with the icon, "OhmTools" as in the wordmark, the
