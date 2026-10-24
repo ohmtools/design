@@ -40,14 +40,21 @@ where an app and this file disagree, this file wins and the app gets fixed.
   order: `kind-su` neutral, `kind-ue` blue, `kind-pr` orange, `kind-tu` teal,
   `kind-s` violet, `kind-wf` lime. Text on them is `foreground`, with
   `block-kind` and `block-room` for the second and third line. The names are
-  zeiteisen's; other apps use the same tokens in the same order. Charts use
-  `chart-1` … `chart-5`.
+  zeiteisen's; other apps use the same tokens in the same order.
+- **Curves in a plot are series too** (faltung's f, g and their product,
+  user decision): each takes a data colour in the same order, its border
+  colour for the line and its fill for a shaded area under it; a result drawn
+  from them is `foreground`. `chart-1` … `chart-5` are shades of red, so
+  they stay out of a plot that carries a red mark (a now-line, a playhead):
+  they would read as the accent.
 - **Colour is never the only cue**: the kind, name or label is written on
-  the block itself.
+  the block itself; a plot names each curve at the curve (no legend), and a
+  shaded area has a second cue (hatching).
 - Lines inside a grid or chart are `grid` (fainter than `border`), their
   labels `hour`, in mono.
-- A mark drawn over coloured content (the now-line over blocks) is
-  `accent-red` with a dot at its start, so it never vanishes in a fill.
+- A mark drawn over coloured content (the now-line over blocks, faltung's
+  playhead over its curves) is `accent-red` with a dot at its start, so it
+  never vanishes in a fill.
 
 ## Light and dark
 
