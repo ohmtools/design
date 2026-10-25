@@ -174,17 +174,35 @@ where an app and this file disagree, this file wins and the app gets fixed.
   in each line. What only cares about width keeps `lg:` / `md:`.
 - **A header**, 56px (48px on `short:` screens): left the app tile (red,
   with the name) or what the view belongs to, then the view's tabs and
-  navigation from compact on; right the panels' icon buttons (settings
-  last). The page has one `<h1>`, `sr-only` if nothing shows it.
-- Settings are a panel: one section per topic, language first (tabs, the
-  languages named in themselves), about last (name, version in mono, GitHub
-  link, debug info). The version (from `package.json`, put in at build time)
-  tells which deploy a browser runs.
+  navigation from compact on; right the panels' icon buttons, then the
+  settings last. The page has one `<h1>`, `sr-only` if nothing shows it.
+- **Settings are a dialog, not a panel**, so an app can grow its settings
+  without crowding a sidebar. One section per topic, the same sections on
+  every step: "General" first (the language as tabs, the languages named in
+  themselves; what else concerns the whole app), "About" last (name,
+  version in mono, GitHub link, debug info). The version (from
+  `package.json`, put in at build time) tells which deploy a browser runs.
+  - From compact on: a centred dialog of up to 760×560 (on `short:` screens
+    the screen's height less 12px above and below, inside the safe areas),
+    frosted glass like every popup. Left the sections, 216px (184px on
+    `short:`): the title "Settings" over ghost buttons with an icon, the
+    open one filled `accent` and semibold (`aria-current="page"`), a
+    `border` line on their right. Right the open section's title (16px
+    semibold) with the close button, its content below, scrolling inside
+    the dialog. Groups within a section are split by lines, 24px around
+    each. Dialogs the settings open stand over them.
+  - Narrow: a page like a panel's (back arrow, title "Settings"), listing
+    the sections as 56px rows: a 20px muted icon, the name, what is set now
+    muted at the right (language, mode, version in mono), a chevron; lines
+    between the rows from the name on. A section opens as a page one level
+    deeper; its back arrow returns to the list.
+  - Panels stay panels (notes, groups, …): sidebar, sheet, page.
 
 | Container | Narrow | Compact | Wide |
 | --- | --- | --- | --- |
 | Menus, pickers | drawer from the bottom | popover | popover |
-| Panels (settings, notes, …) | own page | sheet from the right | sidebar |
+| Panels (notes, groups, …) | own page | sheet from the right | sidebar |
+| Settings | page of sections, each a page | dialog, sections on the left | dialog, sections on the left |
 | Dialogs | sheet from the bottom, main button on top, full width | centred, at most 28rem | centred |
 | Questions (`AlertDialog`) | centred | centred | centred |
 
