@@ -436,7 +436,9 @@ these rules come on top.
   - Compact: one column, the header row as above with everything in it, no
     bottom bar. "Inhalt" (search and chapter list as on phones) and "Auf
     dieser Seite" are panels, a 380px sheet from the right; the page at most
-    720px wide with 24px side padding.
+    720px wide with 24px side padding. Below `md:` (768px) the chapter
+    badge stays in the page's meta line, as on phones, so the title keeps
+    room (at 568px the tabs and buttons leave it about 140px).
 - Wide: three columns, each scrolling for itself.
   - Left, 280px, `border` line right: a search `Input` in a top section,
     then the chapter list as sidebar buttons (32px, 8px radius, active
@@ -455,7 +457,8 @@ these rules come on top.
   hits and the chapter list (44px rows).
 - Settings are the app's settings dialog ("App shell"; user decision,
   2026-10-25, instead of the canvas's 340px panel); on phones the
-  "Einstellungen" tab shows its page of sections. Two sections: "Ansicht"
+  "Einstellungen" tab shows its page of sections, without a back arrow (it
+  is the tab's root; the section pages have one). Two sections: "Ansicht"
   (radio group "Mit Ergänzungen" / "Nur Original", each with a muted
   one-line description, below it muted "Hell oder dunkel folgt dem
   Gerät."), its row showing the view picked; "Über dieses Skript" last (a
