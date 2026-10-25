@@ -127,8 +127,9 @@ export function AppShell({
     }
     const measure = () => {
       const views = viewsRef.current?.scrollWidth ?? 0;
+      // Three 16px gaps and the 1px divider between brand, views and actions.
       const need =
-        (brandRef.current?.offsetWidth ?? 0) + views + (actionsRef.current?.offsetWidth ?? 0) + 64;
+        (brandRef.current?.offsetWidth ?? 0) + views + (actionsRef.current?.offsetWidth ?? 0) + 49;
       const style = getComputedStyle(row);
       const room = row.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
       setWrap(views > 0 && need > room);
@@ -175,8 +176,9 @@ export function AppShell({
                   {views}
                 </>
               )}
-              <span className="flex-1" />
-              <div ref={actionsRef} className="-mr-2 flex shrink-0 items-center gap-2">
+              {/* `ml-auto`, not a spacer: an empty item would cost a second
+                  gap, room a phone's brand needs. */}
+              <div ref={actionsRef} className="-mr-2 ml-auto flex shrink-0 items-center gap-2">
                 {actions}
               </div>
             </div>
