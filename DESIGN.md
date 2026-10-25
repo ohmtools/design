@@ -517,6 +517,12 @@ after every regeneration:
   name in the app's language.
 - `Drawer`: free corners 10px, 560 ms in on its own easing (a swipe's close
   keeps its own speed), `popup-glass` with its bleed in the same colour.
+  `DrawerContent` wraps its viewport in Base UI's
+  `Drawer.VirtualKeyboardProvider` (`@base-ui/react` 1.9 or later): a
+  drawer from the bottom stands on `--drawer-keyboard-inset`, above the
+  on-screen keyboard, which covers the page rather than resizing it
+  (`interactive-widget=resizes-visual`), also for a field focused as it
+  opens.
 - `DropdownMenuContent`, `TooltipContent`, `PopoverContent`, `SelectContent`
   and the centred dialogs: 200 ms.
 - `TabsList` (default variant): one indicator span glides to the active tab;
