@@ -47,6 +47,17 @@ andere wird daraus erzeugt.
    entfernen und die Handanpassungen aus DESIGN.md, „Components“, einbauen
    (roter Lösch-Knopf, Dialog als Blatt von unten auf dem Telefon, gleitender
    Tab-Indikator, …).
+
+   Ist die shadcn-Registry nicht erreichbar (in abgeschotteten Umgebungen
+   wie Claude Code im Web antwortet sie mit HTTP 403), die Komponente aus
+   zeiteisen (`src/components/ui/`) kopieren, dort sind die Handanpassungen
+   schon drin. Fehlt sie auch dort, aus dem Repository
+   [shadcn-ui/ui](https://github.com/shadcn-ui/ui) nachbauen, wie es die
+   Registry tut: `apps/v4/registry/bases/base/ui/<name>.tsx` nehmen, jede
+   Klasse `cn-…` durch ihre `@apply`-Liste aus
+   `apps/v4/registry/styles/style-vega.css` ersetzen und `IconPlaceholder`
+   durch das genannte lucide-Icon. In den Notizen der App festhalten, woher
+   jede Komponente stammt.
 3. Dunkelmodus: `public/dark.js` und ein `ThemeProvider`, siehe DESIGN.md,
    „Light and dark“. Kein Umschalter für das Farbschema.
 4. In der CI prüfen, dass das Theme unverändert bleibt:
@@ -69,6 +80,19 @@ kopieren, `\usepackage{ohmtools-colors}`, dann die Namen verwenden: `ohm` plus
 der Token in PascalCase (`primary` → `ohmPrimary`, `muted-foreground` →
 `ohmMutedForeground`, `accent-red` → `ohmAccentRed`, `kind-pr` → `ohmKindPr`).
 Papier ist hell, deshalb sind das die Werte des hellen Modus.
+
+Vorbild ist die Übungsblatt-Vorlage des Lernhelfers
+(`ohmtools/claude-plugins`, `lernhelfer/skills/lernen/vorlagen/uebungsblatt.cls`,
+pdfTeX aus TeX Live 2023). Was sich dort bewährt hat:
+
+- Ohne Geist: Text in Helvetica (`helvet`, `scaled=0.92`), Zahlen in
+  `\ttfamily` mit `txtt`. siunitx mit `reset-text-family=false`, sonst
+  verlieren Werte die Mono-Schrift. Formeln bleiben in der Mathe-Schrift,
+  also kein `mathastext`.
+- Badges, Kacheln und Punkte als TikZ-Knoten. Stehen sie im Kopf
+  (fancyhdr) oder in Listenmarken (enumitem), braucht der Befehl
+  `\DeclareRobustCommand`, sonst bricht er beim Expandieren ab.
+- Die Kopflinie mit Abstand zum Badge: `\headrule` mit `\vskip2mm` davor.
 
 ### Alles andere
 
