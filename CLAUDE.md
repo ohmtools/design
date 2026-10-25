@@ -21,7 +21,8 @@ Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
   The Lernhelfer's worksheet (claude-plugins) and lernhelfer-skript are to
   follow them; until they do, the canvas wins over both. Except, by user
   decision (2026-10-25): reading pages have the apps' compact step and
-  settings dialog, which the canvas does not show.
+  settings dialog, which the canvas does not show, and every Ergänzung ends
+  with a red end row "Ende der Ergänzung".
 - Never hand-edit a generated file: edit `tokens/` (or `DESIGN.md` outside
   the table, or `scripts/outputs.mjs`), run `npm run build`, commit the
   result. CI runs `npm run check` and `npm test`.

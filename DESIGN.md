@@ -494,11 +494,17 @@ shadcn's typography, for the content only:
   margin, 24px from the text around it:
   - Header row: the badge "Ergänzung" (`accent-red` fill,
     `accent-red-foreground`), the title in 14px semibold ("Variablen in
-    Gleichung 2.1", "Denkanstoß", "Zur Abbildung 2.2"), at the right
-    optionally an outline badge for the kind ("Interaktiv", "Grafik").
+    Gleichung 2.1", "Woher die 63 % kommen", "Zur Abbildung 2.2"), at the
+    right optionally an outline badge for the kind ("Interaktiv", "Grafik").
     Below it a 2px `accent-red` line, 8px under the text.
   - Content: tables 14/20px, prose 16/28px, a question 16/24px medium.
     "Antwort zeigen" is an outline button (32px).
+  - End row, 16px under the content: a 2px `accent-red` line filling the
+    width, then "Ende der Ergänzung" (12/20px muted) at the right, 12px
+    from the line. Why: readers could not tell where an Ergänzung ended and
+    the original went on (user decision, 2026-10-25). Red marks it as the
+    Ergänzung's end, apart from a page break's grey line; the words make
+    sure colour is not the only sign.
 - An annotation of a single word: the word gets a 1.5px dotted `accent-red`
   underline and is a button; it opens a popover (`popover`, ring, shadow,
   8px radius, 280px) headed by the "Ergänzung" badge and "Anmerkung".
