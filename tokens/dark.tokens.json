@@ -33,8 +33,8 @@
     "popover": {
       "$value": {
         "colorSpace": "srgb",
-        "components": [0.0392, 0.0392, 0.0392],
-        "hex": "#0a0a0a"
+        "components": [0.149, 0.149, 0.149],
+        "hex": "#262626"
       }
     },
     "popover-foreground": {

@@ -40,7 +40,7 @@
         "components": [0.9804, 0.9804, 0.9804],
         "hex": "#fafafa"
       },
-      "$description": "Floating surfaces, a step above the ground: popovers, menus, dialogs, sheets, drawers, toasts."
+      "$description": "Floating surfaces (popovers, menus, dialogs, sheets, drawers, toasts), always as frosted glass: at 72 % over a blurred backdrop (`popup-glass`)."
     },
     "popover-foreground": {
       "$value": {

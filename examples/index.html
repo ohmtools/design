@@ -181,6 +181,9 @@
         flex: none;
       }
       @media (prefers-color-scheme: dark) {
+        .menu {
+          --popup-shadow: rgb(0 0 0 / 0.6);
+        }
         .button.outline {
           border-color: var(--input);
           background: color-mix(in oklab, var(--input) 30%, transparent);
@@ -282,12 +285,18 @@
         width: 15rem;
         padding: 4px;
         border-radius: calc(var(--radius) * 0.8);
-        background: var(--popover);
+        /* Frosted glass, as `popup-glass`. */
+        --popup-shadow: rgb(0 0 0 / 0.15);
+        background: color-mix(in oklab, var(--popover) 72%, transparent);
+        -webkit-backdrop-filter: blur(24px) saturate(1.5);
+        backdrop-filter: blur(24px) saturate(1.5);
         color: var(--popover-foreground);
+        --border: color-mix(in oklab, var(--foreground) 12%, transparent);
+        --accent: color-mix(in oklab, var(--foreground) 8%, transparent);
         box-shadow:
-          0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent),
-          0 4px 6px -1px rgb(0 0 0 / 0.1),
-          0 2px 4px -2px rgb(0 0 0 / 0.1);
+          0 0 0 1px color-mix(in oklab, var(--foreground) 30%, transparent),
+          0 20px 25px -5px var(--popup-shadow),
+          0 8px 10px -6px var(--popup-shadow);
       }
       .menu-label {
         padding: 6px 8px;
@@ -474,7 +483,7 @@
       <section class="section">
         <div>
           <h2 class="title">Menu</h2>
-          <p class="description">Overlays float on popover with a ring and a shadow; nothing else does.</p>
+          <p class="description">Overlays float as frosted glass with a ring and a shadow; nothing else does.</p>
         </div>
         <div class="menu" role="menu">
           <div class="menu-label">Profiles</div>

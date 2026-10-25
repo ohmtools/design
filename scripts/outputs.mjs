@@ -89,6 +89,22 @@ ${decls(t.dark)}
   }
 }
 
+/* Floating surfaces (popovers, menus, dialogs, sheets, drawers, toasts):
+   frosted glass, \`popover\` at 72 % over a blurred backdrop. Lines, fields
+   and hovers inside are tints of the foreground, so they show on the glass
+   in both modes. The edge is the component's: a ring of \`foreground\` at
+   30 %, or a border of it on sheets and drawers. */
+@utility popup-glass {
+  background-color: color-mix(in oklab, var(--popover) 72%, transparent);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  backdrop-filter: blur(24px) saturate(1.5);
+  --border: color-mix(in oklab, var(--foreground) 12%, transparent);
+  --input: color-mix(in oklab, var(--foreground) 15%, transparent);
+  --muted: color-mix(in oklab, var(--foreground) 6%, transparent);
+  --accent: color-mix(in oklab, var(--foreground) 8%, transparent);
+  @apply shadow-xl shadow-black/15 dark:shadow-black/60;
+}
+
 /* Reduced motion: no movement anywhere, the app's own or shadcn's; state
    changes still show, at once. */
 @media (prefers-reduced-motion: reduce) {

@@ -121,10 +121,17 @@ where an app and this file disagree, this file wins and the app gets fixed.
   (their free corners). App icons have their own (see below).
 - **No boxes.** Sections are split by 1px divider lines (`border`), not by
   cards, background fills or shadows. Structure comes from lines and space.
-- Only overlays float: popovers, menus, dialogs, drawers, sheets and toasts on
-  `popover`, with a 1px ring of `foreground` at 10 % and a medium shadow.
-  Behind dialogs, drawers and sheets a plain scrim, `black` at 40 % (70 % in
-  dark mode), no blur.
+- Only overlays float: popovers, menus, dialogs, drawers, sheets and toasts,
+  all alike as frosted glass (`popup-glass`): `popover` at 72 % over a
+  backdrop blurred by 24px (saturation 150 %), a 1px ring of `foreground` at
+  30 % (sheets and drawers: a border of it on their free edge) and a large
+  shadow (`black` at 15 %, 60 % in dark mode). Lines, fields and hovers
+  inside are tints of `foreground` (`border` 12 %, `input` 15 %, `muted`
+  6 %, `accent` 8 %) so they show on the glass. Why: a popover on an iPad
+  (no scrim behind it) on `#0a0a0a` with a 10 % ring stood out too little
+  from the black grid (user decision, 2026-10-25, against a lighter opaque
+  surface and a stronger edge alone). Behind dialogs, drawers and sheets
+  still a plain scrim, `black` at 40 % (70 % in dark mode), no blur.
 - Inputs are base-vega's: a 1px `input` border, `rounded-md`, 36px high,
   a faint `input` fill in dark mode.
 - Tabs: a `muted` track; the picked tab is one indicator (`background` with a
@@ -234,6 +241,13 @@ shadcn generates them; these hand-edits are part of the design (zeiteisen's
 - `AlertDialogCancel` defaults to `ghost`.
 - The overlays of `Dialog`, `AlertDialog`, `Sheet` and `Drawer`: a plain
   scrim, `bg-black/40 dark:bg-black/70`, no blur.
+- `popup-glass` instead of `bg-popover` (and shadcn's shadow) on
+  `PopoverContent`, `DialogContent`, `AlertDialogContent`, `SheetContent`,
+  `DrawerContent` (its bleed the same glass colour) and `SelectContent`
+  (its `before:` blur layer removed); the ring `ring-foreground/30`, on
+  sheets and drawers `border-foreground/30`. Sonner's toasts:
+  `--normal-bg` the glass colour, `--normal-border` `foreground` at 30 %,
+  `popup-glass` on the toast.
 - `DialogContent`: a sheet from the bottom edge below `compact:`, full
   width, scrolling inside itself; centred from `compact:` on, at most 28rem.
   `DialogFooter` stacks below `compact:` (main button on top) and is a row
@@ -530,7 +544,7 @@ names, never the values.
 | `foreground` | `#0a0a0a` | `#fafafa` | Text and icons on the background. |
 | `card` | `#fafafa` | `#0a0a0a` | Card surface, a step above the ground. Sections drop it (no boxes), so it is rarely seen. |
 | `card-foreground` | `#0a0a0a` | `#fafafa` | Text on card. |
-| `popover` | `#fafafa` | `#0a0a0a` | Floating surfaces, a step above the ground: popovers, menus, dialogs, sheets, drawers, toasts. |
+| `popover` | `#fafafa` | `#262626` | Floating surfaces (popovers, menus, dialogs, sheets, drawers, toasts), always as frosted glass: at 72 % over a blurred backdrop (`popup-glass`). |
 | `popover-foreground` | `#0a0a0a` | `#fafafa` | Text and icons on popover. |
 | `primary` | `#0a0a0a` | `#fafafa` | The main action: neutral, black on light, white on dark. Red is never primary (accent-red). |
 | `primary-foreground` | `#fafafa` | `#0a0a0a` | Text and icons on primary. |
