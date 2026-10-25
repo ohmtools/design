@@ -7,7 +7,7 @@ import path from "node:path";
 import { root } from "./tokens.mjs";
 
 const SOURCE = "shadcn/src";
-const MARKER = /^\/\/ ohmtools\/design: (\S+)/;
+const MARKER = /^(?:\/\/|\/\*) ohmtools\/design: (\S+)/;
 
 const walk = (dir) =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -26,12 +26,12 @@ function internal(specifier, byTarget) {
 // where it goes in an app, the shared files it imports and its npm packages.
 export function components() {
   const files = walk(path.join(root, SOURCE))
-    .filter((file) => /\.tsx?$/.test(file))
+    .filter((file) => /\.(tsx?|css)$/.test(file))
     .sort();
   const list = files.map((file) => {
     const repo = path.relative(root, file).split(path.sep).join("/");
     return {
-      name: path.basename(file).replace(/\.tsx?$/, ""),
+      name: path.basename(file).replace(/\.(tsx?|css)$/, ""),
       path: repo,
       target: repo.slice("shadcn/".length),
       text: fs.readFileSync(file, "utf8"),
@@ -39,8 +39,10 @@ export function components() {
   });
   const byTarget = new Map(list.map((c) => [c.target, c]));
   for (const c of list) {
+    // `import … from "x"` in scripts, `@import "x"` in stylesheets.
     const specifiers = [
       ...c.text.matchAll(/^\s*(?:import|export)[^"']*?from\s+["']([^"']+)["']/gm),
+      ...c.text.matchAll(/^@import\s+["']([^"']+)["']/gm),
     ].map((m) => m[1]);
     c.uses = [...new Set(specifiers.map((s) => internal(s, byTarget)?.name).filter(Boolean))];
     c.packages = [
@@ -105,7 +107,7 @@ export function checkCopy(text) {
   }
   const normal = (s) => s.replace(/\r\n/g, "\n");
   if (normal(text) === normal(fs.readFileSync(source, "utf8"))) return [];
-  const name = path.basename(marker[1]).replace(/\.tsx?$/, "");
+  const name = path.basename(marker[1]).replace(/\.(tsx?|css)$/, "");
   return [
     `differs from the design's ${marker[1]}: do not edit a copied component, ` +
       `run \`npx --yes github:ohmtools/design add ${name}\` (or change it in the design)`,

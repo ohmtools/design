@@ -13,7 +13,7 @@ test("every shared component names its own path and passes the check", () => {
   const list = components();
   assert.ok(list.length > 0);
   for (const c of list) {
-    assert.match(c.text, new RegExp(`^// ohmtools/design: ${c.path} `), c.path);
+    assert.match(c.text, new RegExp(`^(//|/\\*) ohmtools/design: ${c.path} `), c.path);
     assert.deepEqual(checkFile(path.join(root, c.path)), [], c.path);
   }
 });
@@ -29,8 +29,8 @@ test("names are unique and every import resolves (the app brings @/lib/utils)", 
     );
 });
 
-test("the step queries of steps.ts are the variants of shadcn/index.css", () => {
-  const css = read("shadcn/index.css");
+test("the step queries of steps.ts are the variants of the design stylesheet", () => {
+  const css = read("shadcn/src/styles/ohmtools.css");
   const steps = read("shadcn/src/lib/ohmtools/steps.ts");
   const query = (name) => steps.match(new RegExp(`export const ${name} = "([^"]+)"`))[1];
   assert.ok(css.includes(`@media ${query("COMPACT_QUERY")} {`));

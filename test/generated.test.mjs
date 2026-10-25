@@ -11,6 +11,7 @@ import {
   themeDeclarations,
 } from "../scripts/check.mjs";
 import { generated } from "../scripts/generated.mjs";
+import { DESIGN_CSS } from "../scripts/outputs.mjs";
 import { root } from "../scripts/tokens.mjs";
 
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
@@ -20,14 +21,14 @@ test("generated files are up to date (npm run build)", () => {
 });
 
 test("the generated theme files pass the check", () => {
-  assert.deepEqual(checkCss(read("shadcn/index.css")), []);
-  assert.deepEqual(checkShell(read("shadcn/index.css")), []);
+  assert.deepEqual(checkCss(read(DESIGN_CSS)), []);
+  assert.deepEqual(checkShell(read(DESIGN_CSS)), []);
   assert.deepEqual(checkCss(read("dist/tokens.css")), []);
   assert.deepEqual(checkComponentsJson(read("shadcn/components.json")), []);
 });
 
 test("the check finds a changed and a missing colour", () => {
-  const css = read("shadcn/index.css")
+  const css = read(DESIGN_CSS)
     .replace("--primary: #0a0a0a;", "--primary: #dc2626;")
     .replace(/\n {2}--ring: [^;]+;/, "")
     .replace(/\n {2}--font-mono: [^;]+;/, "");
@@ -38,8 +39,8 @@ test("the check finds a changed and a missing colour", () => {
   ]);
 });
 
-test("the check wants the step variants and popup-glass of shadcn/index.css", () => {
-  const css = read("shadcn/index.css")
+test("the check wants the step variants and popup-glass of the design stylesheet", () => {
+  const css = read(DESIGN_CSS)
     .replace(
       /@custom-variant compact \{[\s\S]*?\n\}/,
       "@custom-variant compact (@media (width >= 40rem), (height < 600px) and (orientation: landscape));",
@@ -47,8 +48,8 @@ test("the check wants the step variants and popup-glass of shadcn/index.css", ()
     .replace(/@utility popup-glass \{[\s\S]*?\n\}/, "")
     .replace("@custom-variant wide (@media", "@custom-variant  wide  (@media");
   assert.deepEqual(checkShell(css), [
-    "@custom-variant compact differs from shadcn/index.css",
-    "@utility popup-glass missing, copy it from shadcn/index.css",
+    `@custom-variant compact differs from ${DESIGN_CSS}`,
+    `@utility popup-glass missing, copy it from ${DESIGN_CSS}`,
   ]);
 });
 
@@ -59,7 +60,13 @@ test("dark comes from .dark and from a prefers-color-scheme :root", () => {
     @media (prefers-color-scheme: dark) { :root { --c: 3; } }
     @theme inline { --font-sans: Geist; --font-mono: Mono; --color-a: var(--a); }`);
   assert.deepEqual([...found.light], [["a", "1"]]);
-  assert.deepEqual([...found.dark], [["b", "2"], ["c", "3"]]);
+  assert.deepEqual(
+    [...found.dark],
+    [
+      ["b", "2"],
+      ["c", "3"],
+    ],
+  );
   assert.equal(found.font, "Geist");
   assert.equal(found.mono, "Mono");
 });
@@ -67,7 +74,10 @@ test("dark comes from .dark and from a prefers-color-scheme :root", () => {
 test("colours compare by value", () => {
   const css = read("dist/tokens.css")
     .replace("--background: #ffffff;", "--background: #FFF;")
-    .replace("--chart-1: oklch(0.808 0.114 19.571);", "--chart-1: oklch(0.808 0.114 19.571 / 100%);");
+    .replace(
+      "--chart-1: oklch(0.808 0.114 19.571);",
+      "--chart-1: oklch(0.808 0.114 19.571 / 100%);",
+    );
   assert.deepEqual(checkCss(css), []);
   assert.equal(sameValue("#1f1f1f", "#1f1f1fff"), true);
   assert.equal(sameValue("#000000", "#000"), true);

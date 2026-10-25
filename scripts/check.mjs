@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { checkCopy } from "./components.mjs";
+import { DESIGN_CSS } from "./outputs.mjs";
 import { cssColor, cssDimension, cssFont, loadTokens, root } from "./tokens.mjs";
 
 // --- CSS: the theme's custom properties ----------------------------------------
@@ -57,7 +58,9 @@ function parseHex(value) {
 }
 
 function parseOklch(value) {
-  const m = value.match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)(%?))?\s*\)$/i);
+  const m = value.match(
+    /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.]+)(%?))?\s*\)$/i,
+  );
   if (!m) return null;
   const alpha = m[4] === undefined ? 1 : Number(m[4]) / (m[5] ? 100 : 1);
   return [Number(m[1]), Number(m[2]), Number(m[3]), alpha];
@@ -100,14 +103,15 @@ export function checkCss(css, t = loadTokens()) {
     const expected = cssFont(families);
     const actual = found[key];
     if (actual === null) problems.push(`--${name} missing, expected ${expected}`);
-    else if (!sameValue(actual, expected)) problems.push(`--${name} is ${actual}, expected ${expected}`);
+    else if (!sameValue(actual, expected))
+      problems.push(`--${name} is ${actual}, expected ${expected}`);
   }
   return problems;
 }
 
 // --- CSS: what a Tailwind theme adds around the tokens -------------------------
 
-// The step variants and `popup-glass` as shadcn/index.css writes them
+// The step variants and `popup-glass` as the design's stylesheet writes them
 // (comments and whitespace aside). Only in a Tailwind file: plain pages on
 // dist/tokens.css have neither.
 const SHELL = [
@@ -140,13 +144,13 @@ const squash = (text) =>
 export function checkShell(css) {
   const strip = (text) => text.replace(/\/\*[\s\S]*?\*\//g, "");
   const app = strip(css);
-  const design = strip(fs.readFileSync(path.join(root, "shadcn/index.css"), "utf8"));
+  const design = strip(fs.readFileSync(path.join(root, DESIGN_CSS), "utf8"));
   return SHELL.flatMap((head) => {
     const actual = statement(app, head);
-    if (actual === null) return [`${head} missing, copy it from shadcn/index.css`];
+    if (actual === null) return [`${head} missing, copy it from ${DESIGN_CSS}`];
     return squash(actual) === squash(statement(design, head))
       ? []
-      : [`${head} differs from shadcn/index.css`];
+      : [`${head} differs from ${DESIGN_CSS}`];
   });
 }
 
@@ -172,7 +176,8 @@ export function checkComponentsJson(text) {
     return [`not JSON: ${error.message}`];
   }
   return STYLE_KEYS.filter((key) => at(config, key) !== at(design, key)).map(
-    (key) => `${key} is ${JSON.stringify(at(config, key))}, expected ${JSON.stringify(at(design, key))}`,
+    (key) =>
+      `${key} is ${JSON.stringify(at(config, key))}, expected ${JSON.stringify(at(design, key))}`,
   );
 }
 

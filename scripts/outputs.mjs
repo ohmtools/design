@@ -8,14 +8,29 @@ const SOURCE = "github.com/ohmtools/design, generated from tokens/ by `npm run b
 const decls = (list, indent = "  ") =>
   list.map(({ name, value }) => `${indent}--${name}: ${cssColor(value)};`).join("\n");
 
-// --- shadcn/index.css -------------------------------------------------------
+// --- shadcn/src/styles/ohmtools.css and shadcn/index.css ---------------------
+
+// Where the design's stylesheet lies in the shared components, and its marker
+// (the first line of every shared file, see scripts/components.mjs).
+export const DESIGN_CSS = "shadcn/src/styles/ohmtools.css";
+
+// An app's `src/index.css`: the design's stylesheet, then the app's own.
+export function appCss() {
+  return `/* The app's stylesheet. The design comes from ./styles/ohmtools.css
+   (github.com/ohmtools/design: \`npx --yes github:ohmtools/design add
+   ohmtools\`), copied unchanged; app-specific variants, colours and
+   utilities go below. */
+@import "./styles/ohmtools.css";
+`;
+}
 
 // What `shadcn init` writes for components.json, with the design's theme in
 // place of shadcn's colours, as zeiteisen's `src/index.css` has it: Geist and
 // Geist Mono, the three steps of the app shell (DESIGN.md), the design's own
 // colours in `@theme inline` before shadcn's (which it lists in reverse, as
-// shadcn does), `--radius` after `--chart-5` in `:root`, as shadcn does. The
-// reduced-motion rule ends it (zeiteisen's `src/motion.css`).
+// shadcn does), `--radius` after `--chart-5` in `:root`, as shadcn does.
+// Then the view transitions and the reduced-motion rule (zeiteisen's
+// `src/motion.css`).
 export function shadcnCss(t) {
   const { shadcn, own } = splitShadcn(t.light);
   const themeColors = [...own, ...[...shadcn].reverse()]
@@ -26,11 +41,11 @@ export function shadcnCss(t) {
       const line = `  --${c.name}: ${cssColor(c.value)};`;
       return c.name === "chart-5" ? [line, `  --radius: ${cssDimension(t.radius)};`] : [line];
     });
-  return `/* ohmtools design: shadcn base-vega, zeiteisen's theme.
+  return `/* ohmtools/design: ${DESIGN_CSS} (copied by \`ohmtools-design add\`, do not edit) */
+/* ohmtools design: shadcn base-vega, zeiteisen's theme, the app shell's
+   steps, frosted glass and motion.
    ${SOURCE}.
-   Copy as src/index.css and keep the theme values as they are
-   (\`npx --yes github:ohmtools/design check src/index.css\`). App-specific
-   variants, colours and utilities go at the end. */
+   The app's src/index.css imports it (shadcn/index.css). */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -110,6 +125,101 @@ ${decls(t.dark)}
   --muted: color-mix(in oklab, var(--foreground) 6%, transparent);
   --accent: color-mix(in oklab, var(--foreground) 8%, transparent);
   @apply shadow-xl shadow-black/15 dark:shadow-black/60;
+}
+
+/* View transitions (\`transition()\` in lib/ohmtools/motion.ts): the browser
+   shoots the page before and after a change and animates between the shots.
+   \`html[data-transition]\` names the kind for as long as one runs; outside it
+   nothing carries a \`view-transition-name\`. */
+@keyframes ohm-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+}
+@keyframes ohm-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+}
+@keyframes ohm-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+}
+@keyframes ohm-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+}
+
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: ${cssDimension(t.durationIn)};
+  animation-timing-function: ${cssEasing(t.easing)};
+}
+
+/* \`panel\` (wide): the sidebar slides in from the right and out the same
+   way; the rest of the page stands at its new width at once (a crossfade of
+   two widths shows every line twice). */
+html[data-transition="panel"] [data-vt="panel"] {
+  view-transition-name: panel;
+}
+html[data-transition="panel"]::view-transition-old(root) {
+  display: none;
+}
+html[data-transition="panel"]::view-transition-new(root) {
+  animation: none;
+}
+html[data-transition="panel"]::view-transition-new(panel):only-child {
+  animation-name: ohm-in-right;
+}
+html[data-transition="panel"]::view-transition-old(panel):only-child {
+  animation-name: ohm-out-right;
+  animation-duration: ${cssDimension(t.durationOut)};
+}
+
+/* \`forward\` / \`back\` (phones, compact settings): a page of its own comes
+   in from the right, what it covers steps aside to the left; back is the
+   mirror. */
+html[data-transition="forward"]::view-transition-old(root) {
+  animation-name: ohm-out-left;
+  animation-duration: ${cssDimension(t.durationOut)};
+}
+html[data-transition="forward"]::view-transition-new(root) {
+  animation-name: ohm-in-right;
+}
+html[data-transition="back"]::view-transition-old(root) {
+  animation-name: ohm-out-right;
+  animation-duration: ${cssDimension(t.durationOut)};
+}
+html[data-transition="back"]::view-transition-new(root) {
+  animation-name: ohm-in-left;
+}
+
+/* \`view-next\` / \`view-previous\`: the view behind another tab comes in
+   from that tab's side; only the incoming view moves, the rest stands. */
+html[data-transition^="view-"] [data-vt="view"] {
+  view-transition-name: view;
+}
+html[data-transition^="view-"]::view-transition-old(root),
+html[data-transition^="view-"]::view-transition-new(root),
+html[data-transition^="view-"]::view-transition-group(view) {
+  animation: none;
+}
+html[data-transition^="view-"]::view-transition-old(view) {
+  animation: none;
+  opacity: 0;
+}
+html[data-transition="view-next"]::view-transition-new(view) {
+  animation-name: ohm-in-right;
+}
+html[data-transition="view-previous"]::view-transition-new(view) {
+  animation-name: ohm-in-left;
 }
 
 /* Reduced motion: no movement anywhere, the app's own or shadcn's; state

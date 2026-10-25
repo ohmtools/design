@@ -1,7 +1,8 @@
 # ohmtools design — working notes
 
 The design every ohmtools repo follows. Rules: `DESIGN.md`. Values: `tokens/`.
-Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
+Generated from them: `shadcn/src/styles/ohmtools.css` (with the template
+`shadcn/index.css`), `dist/*` and the colour table in
 `DESIGN.md` (between the `tokens:` markers). How other repos use it:
 `README.md`.
 
@@ -42,13 +43,14 @@ Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
   `dev.ohmtools.tailwind`: `accent-red` -> `red`) only in `light`. shadcn's
   colours end with `sidebar-ring`, the design's own follow. `base` holds
   what does not change with the mode: fonts, radius, spacing, motion.
-- `shadcn/index.css` is what `shadcn init` writes for
+- `shadcn/src/styles/ohmtools.css` is what `shadcn init` writes for
   `shadcn/components.json` with the design's theme, the `compact` / `wide` /
-  `short` variants of the app shell and the reduced-motion rule.
-  zeiteisen's `src/index.css` is the same apart from comments and its
-  `motion.css` import (`ohmtools-design check` passes there; diff the two
-  after a change). When shadcn changes its output (new variables), change
-  the template in `scripts/outputs.mjs` and the tokens together.
+  `short` variants of the app shell, `popup-glass`, the view transitions
+  and the reduced-motion rule; an app's `src/index.css` imports it
+  (`shadcn/index.css`, the template) and adds its own. zeiteisen's
+  `src/index.css` plus `src/motion.css` still hold the same in place (until
+  it adopts the import). When shadcn changes its output (new variables),
+  change the template in `scripts/outputs.mjs` and the tokens together.
 - OKLCH hex values are computed (OKLCH → sRGB, clipped to the gamut), tested
   against Tailwind's published hex values (`test/tokens.test.mjs`).
 - `examples/index.html` rebuilds the look on `dist/tokens.css` alone; check
@@ -64,7 +66,9 @@ Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
   folder with `node_modules` linked from zeiteisen, `add --all`, a
   `src/lib/utils.ts` re-exporting `cn`, `tsc` in strict mode, and a demo
   page in Playwright at 390 × 844, 844 × 390, 834 × 1194 and 1440 × 900.
-  `steps.ts` must name the same queries as the variants of
-  `shadcn/index.css` (a test checks it).
+  `steps.ts` must name the same queries as the variants of the stylesheet
+  (a test checks it). The element groups (`app-shell`, `views`, `panel`,
+  `area`, `page-editor`, `expand`, `popup`, `lib/ohmtools/toast`) are the
+  API apps use; the rest is what they are built from.
 - `README.md` in German (user decision); `DESIGN.md`, this file and code
   comments in English, like zeiteisen.

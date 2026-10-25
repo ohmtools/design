@@ -24,8 +24,8 @@ andere wird daraus erzeugt.
 | [`DESIGN.md`](DESIGN.md) | Die Regeln und alle Farben als Tabelle |
 | [`tokens/`](tokens/) | Quelle aller Werte ([DTCG](https://www.designtokens.org)-JSON) |
 | [`shadcn/components.json`](shadcn/components.json) | shadcn-Konfiguration |
-| [`shadcn/index.css`](shadcn/index.css) | `src/index.css` einer shadcn-App (erzeugt) |
-| [`shadcn/src/`](shadcn/src/) | Die geteilten React-Komponenten: shadcns Komponenten mit den Handanpassungen, die Popups je Stufe (Drawer auf dem Telefon, Popup ab compact), Einstellungen, Leiste unten, Toaster, Stufen und Bewegung |
+| [`shadcn/index.css`](shadcn/index.css) | Vorlage für `src/index.css` einer shadcn-App: importiert das Stylesheet des Designs (erzeugt) |
+| [`shadcn/src/`](shadcn/src/) | Alles Geteilte, an den Pfaden einer App: die Elementgruppen als Komponenten (`AppShell`, `Views`, `Panel`, `Area`, `PageEditor`, `Expand`, `Popup`, `toast`), shadcns Komponenten mit den Handanpassungen, Stufen und Bewegung, und `styles/ohmtools.css`, das ganze CSS des Designs (erzeugt) |
 | [`dist/tokens.css`](dist/tokens.css) | CSS-Variablen für Seiten ohne shadcn (erzeugt) |
 | [`dist/tokens.json`](dist/tokens.json) | Alle Farben je Modus als CSS-Wert und Hex, dazu Schriften, Abstände und Bewegung, für alles andere (erzeugt) |
 | [`dist/ohmtools-colors.sty`](dist/ohmtools-colors.sty) | Die Farben für LaTeX (erzeugt) |
@@ -38,17 +38,25 @@ andere wird daraus erzeugt.
 ### shadcn-App (React, Tailwind v4)
 
 1. Das Projekt nach shadcns [Vite-Anleitung](https://ui.shadcn.com/docs/installation/vite)
-   aufsetzen, dann `components.json` und `src/index.css` durch
-   [`shadcn/components.json`](shadcn/components.json) und
-   [`shadcn/index.css`](shadcn/index.css) ersetzen und
-   `@fontsource-variable/geist` sowie `@fontsource-variable/geist-mono`
-   installieren. App-eigenes CSS kommt ans Ende von `src/index.css`.
-2. Komponenten aus diesem Repository übernehmen, nicht aus der
-   shadcn-Registry:
+   aufsetzen, dann `components.json` durch
+   [`shadcn/components.json`](shadcn/components.json) und `src/index.css`
+   durch [`shadcn/index.css`](shadcn/index.css) ersetzen und das Stylesheet
+   des Designs holen: `npx --yes github:ohmtools/design add ohmtools`
+   (schreibt `src/styles/ohmtools.css` und nennt die fehlenden Pakete:
+   `tw-animate-css`, `shadcn`, `@fontsource-variable/geist`,
+   `@fontsource-variable/geist-mono`). App-eigenes CSS kommt unter den Import
+   in `src/index.css`.
+2. Die Oberfläche aus den Elementgruppen bauen, nicht aus einzelnen
+   Elementen: `AppShell` außen, darin `Views`, `PageEditor`, `Panel`,
+   `Area`, `Expand`, `Popup` und `toast()`. Jede Gruppe zeigt auf Telefon,
+   compact und wide das Element, das DESIGN.md („Elements by step“) dort
+   vorsieht, etwa `Popup` auf dem Telefon als Drawer und ab compact als
+   Menü, Popover, Dialog oder Rückfrage. Komponenten kommen aus diesem
+   Repository, nicht aus der shadcn-Registry:
 
    ```sh
    npx --yes github:ohmtools/design list              # was es gibt
-   npx --yes github:ohmtools/design add responsive-dialog settings
+   npx --yes github:ohmtools/design add app-shell views panel area popup
    ```
 
    `add` kopiert die Komponenten samt allem, was sie importieren, an
@@ -57,7 +65,8 @@ andere wird daraus erzeugt.
    mit. Eine eigene Datei der App bleibt, außer mit `--force`. Die Kopien
    tragen in der ersten Zeile einen Hinweis auf ihre Quelle und werden in der
    App nie bearbeitet (auch nicht vom Formatierer: die Verzeichnisse
-   `src/components/ui`, `src/components/ohmtools` und `src/lib/ohmtools` aus
+   `src/components/ui`, `src/components/ohmtools`, `src/lib/ohmtools` und
+   `src/styles` aus
    seiner Konfiguration nehmen); eine Änderung kommt zuerst hierher, für alle
    Apps, dann `add` erneut.
 
@@ -77,7 +86,7 @@ andere wird daraus erzeugt.
 4. In der CI prüfen, dass das Theme unverändert bleibt:
 
    ```yaml
-   - run: npx --yes github:ohmtools/design check src/index.css components.json src/components/**/*.tsx src/lib/ohmtools/*.ts
+   - run: npx --yes github:ohmtools/design check src/index.css src/styles/ohmtools.css components.json src/components/**/*.tsx src/lib/ohmtools/*.ts
    ```
 
 ### Webseite ohne shadcn
@@ -139,7 +148,9 @@ Projekts aufgerufen, endet mit 1, wenn eine Datei dem Design nicht folgt:
   (`.dark`, oder `:root` in einer Media-Query `prefers-color-scheme: dark`);
   app-eigene Variablen sind erlaubt; importiert sie `tailwindcss`, muss sie
   außerdem die Varianten `compact`, `wide` und `short` und `@utility
-  popup-glass` so enthalten, wie sie in `shadcn/index.css` stehen;
+  popup-glass` so enthalten, wie sie in `shadcn/src/styles/ohmtools.css`
+  stehen (eine App, die dieses Stylesheet importiert, deklariert selbst kein
+  `--primary`; die Kopie prüft der nächste Punkt);
 - `components.json` muss denselben Stil, dieselbe Grundfarbe, dieselben Icons
   und dieselben Menü-Einstellungen verwenden;
 - eine Datei mit dem Hinweis von `add` in der ersten Zeile muss der Datei
@@ -157,7 +168,7 @@ Eine Änderung hier ist eine Änderung für alle Apps. `tokens/`,
 zeiteisen: `oxfmt` mit Standardeinstellungen), dann:
 
 ```sh
-npm run build   # shadcn/index.css, dist/ und die Tabelle in DESIGN.md neu erzeugen
+npm run build   # Stylesheet, shadcn/index.css, dist/ und die Tabelle in DESIGN.md neu erzeugen
 npm test        # node:test
 npm run check   # schlägt fehl, wenn eine erzeugte Datei veraltet ist (läuft in der CI)
 ```

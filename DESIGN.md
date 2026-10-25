@@ -10,10 +10,11 @@ where an app and this file disagree, this file wins and the app gets fixed.
 - [shadcn/ui](https://ui.shadcn.com) with style `base-vega` (Base UI
   primitives, not Radix), base colour Neutral, icons lucide, fonts Geist and
   Geist Mono. Config: [`shadcn/components.json`](shadcn/components.json),
-  theme: [`shadcn/index.css`](shadcn/index.css).
+  stylesheet: [`shadcn/src/styles/ohmtools.css`](shadcn/src/styles/ohmtools.css),
+  imported by the app's `src/index.css` ([`shadcn/index.css`](shadcn/index.css)).
 - **The design's own theme on shadcn's components**: OLED black and white
   grounds, a neutral `primary`, red (`accent-red`) as the one accent, data
-  coloured by kind. The theme lives in `src/index.css` only; components keep
+  coloured by kind. The theme lives in the design's stylesheet only; components keep
   shadcn's classes apart from the hand-edits listed under "Components".
   Components that more than one app needs are shared from
   [`shadcn/src/`](shadcn/src/) ("Shared components").
@@ -189,7 +190,7 @@ where an app and this file disagree, this file wins and the app gets fixed.
   2026-10-25). Check that `document.documentElement.scrollHeight` equals
   `innerHeight` on every view.
 - **Three steps, the same content in other containers** (the `compact:`,
-  `wide:` and `short:` variants in `shadcn/index.css`; in script `useStep()`
+  `wide:` and `short:` variants of the design's stylesheet; in script `useStep()`
   from `steps.ts`, see "Shared components"):
 
   | Step | When | Devices | Layout |
@@ -313,7 +314,7 @@ Ask in this order; the first yes decides:
 2. The point of the view, changed often, taking effect at once (faltung's
    formulas)? **Editing in the page.** It fits when it takes at most two
    lines and what it changes stays in sight; else it goes into a drawer
-   (narrow) or a sheet from the right (compact), `EditorSheet`.
+   (narrow) or a sheet from the right (compact), `PageEditor`.
 3. Used beside the content, for longer and again and again (zeiteisen's
    groups and notes)? **Panel.**
 4. An area of its own with sections, visited rarely, not needing the content
@@ -332,10 +333,10 @@ and then → popup.
 
 | Kind | When | Leaving it |
 | --- | --- | --- |
-| **Menu** (`ResponsiveMenu`, `ResponsiveSelect`) | a list of actions, or one choice that closes once picked | closes |
-| **Popover** (`ResponsivePopover`) | details or small settings of one element, taking effect at once | closes |
-| **Dialog** (`ResponsiveDialog`) | a task with an end: inputs count only with the main button; or reading too long for a popover | runs Cancel, or nothing |
-| **Question** (`ResponsiveAlertDialog`) | before something that cannot be undone | runs Cancel |
+| **Menu** (`Popup kind="menu"`, `kind="select"`) | a list of actions, or one choice that closes once picked | closes |
+| **Popover** (`Popup kind="popover"`) | details or small settings of one element, taking effect at once | closes |
+| **Dialog** (`Popup kind="dialog"`) | a task with an end: inputs count only with the main button; or reading too long for a popover | runs Cancel, or nothing |
+| **Question** (`Popup kind="question"`) | before something that cannot be undone | runs Cancel |
 
 - **Leaving without choosing** (a swipe down, a press outside, Esc, the back
   gesture, the close button): a popup with Cancel runs Cancel, without
@@ -388,13 +389,13 @@ The app moves where state changes, never for decoration.
   sideways (`overflow-x: hidden`) while it moves, else a horizontal
   scrollbar flashes; of overlapping slides only the last one releases it.
 - A View Transition names its parts (`view-transition-name`) only while it
-  runs (`html[data-transition]` set for its duration, zeiteisen's
-  `src/motion.css`). For a sidebar the old shot of the page is hidden and
+  runs (`html[data-transition]` set for its duration, the design's
+  stylesheet). For a sidebar the old shot of the page is hidden and
   the new one stands at once; only the sidebar slides (a crossfade of the
   page's two widths shows every line twice).
 - **`prefers-reduced-motion`: no movement anywhere**, the app's own or
   shadcn's; state changes still show, at once (the rule at the end of
-  `shadcn/index.css`).
+  the design's stylesheet).
 
 ## Language
 
@@ -413,27 +414,66 @@ The app moves where state changes, never for decoration.
 
 ### Shared components
 
-Every component more than one app needs lives once, in
-[`shadcn/src/`](shadcn/src/), at the path it takes in an app:
+Everything of the design that more than one app needs lives once, in
+[`shadcn/src/`](shadcn/src/), at the path it takes in an app.
 
-- `components/ui/`: shadcn's components with the hand-edits below
-  (zeiteisen's; `dropdown-menu` and `tooltip`, which zeiteisen does not
-  use, from shadcn's output with the same hand-edits).
-- `components/ohmtools/`: the design's own. The popups of "Elements by
-  step", each a drawer on phones and its popup from compact on, with the
-  rule for leaving it: `ResponsiveDialog`, `ResponsiveAlertDialog`,
-  `ResponsivePopover`, `ResponsiveMenu`, `ResponsiveSelect` (all on
-  `PhoneDrawer`); `EditorSheet` for editing that does not fit into the page;
-  `PanelSheet` and `PanelHeader` for panels and pages; `SettingsDialog`,
-  `SettingsPage` and `LanguageTabs`; `BottomBar`, `AppToaster`,
-  `ThemeProvider`, `GitHubLink`. Texts come in as props (`closeLabel`,
-  `backLabel`, titles), in the app's language.
-- `lib/ohmtools/`: `steps.ts` (the step queries and `useStep()`),
-  `motion.ts` (the easing, view transitions, `slideIn`, `easeInOut`),
-  `bottom-bar-height.ts` (`--bottom-bar`).
+**The element groups.** An app names the group, never the element: each
+group renders the right element for the step it runs on ("Elements by
+step", "Which group"), with the design's motion and the rule for leaving a
+popup. Inside an `AppShell`:
 
-An app copies them with `npx --yes github:ohmtools/design add <name>…`
-(`--all`, `list`), which also copies what they import and names the npm
+| Group | Component | Narrow | Compact | Wide |
+| --- | --- | --- | --- | --- |
+| View | `Views` (tabs), `ViewControls` (the view's own controls) | bar at the bottom | header | header |
+| Editing in the page | `PageEditor` | in the page where it `fits`, else a drawer | in the page where it `fits`, else a sheet from the right | in the page |
+| Panel | `Panel` with `usePanel()` | page of its own | sheet from the right over the content | sidebar beside the content |
+| Area | `Area` with `useArea()` | page of sections | page of sections | large dialog |
+| Toast | `toast()` (`lib/ohmtools/toast.ts`) | above the bar | bottom right | bottom right |
+| Expanding | `Expand` | in the page | in the page | in the page |
+| Popup | `Popup` with `kind` `menu`, `select`, `popover`, `dialog` or `question` (rows: `PopupItem`, `PopupGroup`, `PopupSeparator`) | drawer | the `kind`'s popup | the `kind`'s popup |
+
+```tsx
+<AppShell title="Faltung" brand={<Brand />} actions={<SettingsButton />}>
+  <Views value={view} onValueChange={setView} items={VIEWS} label={m.views} />
+  <PageEditor title={m.functions} editLabel={m.edit} summary={<Summary />}>…</PageEditor>
+  <Panel open={notes.open} onClose={notes.hide} title={m.notes}>…</Panel>
+  <Area open={settings.open} onClose={settings.hide} title={m.settings} sections={SECTIONS} />
+  <Popup kind="question" open={…} onOpenChange={…} title={m.delete_q} action={m.delete}
+    destructive cancel={m.cancel} onAction={…} />
+</AppShell>
+```
+
+`AppShell` is the app shell of "App shell": one viewport tall, the header
+(brand left, actions right, the views between them from compact on, in a
+second row where one does not hold them), the content, the wide sidebar,
+the bar at the bottom on phones, pages of their own over everything (the
+rest inert under them), the toaster and the colour scheme. The groups place
+themselves into it. Which popup `kind` fits is the person's task ("Popups");
+the step is never the app's business, except where content itself changes
+with the width (`useStep()`).
+
+**Underneath**, for what the groups do not cover: `components/ui/`, shadcn's
+components with the hand-edits below (zeiteisen's; `dropdown-menu` and
+`tooltip`, which zeiteisen does not use, from shadcn's output with the same
+hand-edits); the step-switching popups `ResponsiveDialog`,
+`ResponsiveAlertDialog`, `ResponsivePopover`, `ResponsiveMenu`,
+`ResponsiveSelect` on `PhoneDrawer`, `EditorSheet`, `PanelSheet`,
+`PanelHeader`, `SettingsDialog`, `SettingsPage`, `LanguageTabs`,
+`BottomBar`, `AppToaster`, `ThemeProvider`, `GitHubLink`; and in
+`lib/ohmtools/` `steps.ts` (the step queries, `useStep()`, `useMedia()`),
+`motion.ts` (the easing, view transitions, `slideIn`, `easeInOut`) and
+`bottom-bar-height.ts`. Texts come in as props (`closeLabel`, `backLabel`,
+titles), in the app's language.
+
+**The stylesheet** `styles/ohmtools.css` (generated from `tokens/`) holds
+all of the design's CSS: Tailwind, shadcn, the fonts, the theme, the step
+variants, `popup-glass`, the view transitions (`panel`, `forward`, `back`,
+`view-next`, `view-previous`) and the reduced-motion rule. An app's
+`src/index.css` imports it and adds only its own
+([`shadcn/index.css`](shadcn/index.css)).
+
+An app copies all of it with `npx --yes github:ohmtools/design add <name>…`
+(`--all`, `list`), which also copies what a file imports and names the npm
 packages still to install; the app brings `@/lib/utils` (`cn`) from
 `shadcn init`. A copy starts with a marker naming its source and is never
 edited in the app: `ohmtools-design check` fails when it differs, and a
