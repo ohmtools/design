@@ -25,6 +25,7 @@ andere wird daraus erzeugt.
 | [`tokens/`](tokens/) | Quelle aller Werte ([DTCG](https://www.designtokens.org)-JSON) |
 | [`shadcn/components.json`](shadcn/components.json) | shadcn-Konfiguration |
 | [`shadcn/index.css`](shadcn/index.css) | `src/index.css` einer shadcn-App (erzeugt) |
+| [`shadcn/src/`](shadcn/src/) | Die geteilten React-Komponenten: shadcns Komponenten mit den Handanpassungen, die Popups je Stufe (Drawer auf dem Telefon, Popup ab compact), Einstellungen, Leiste unten, Toaster, Stufen und Bewegung |
 | [`dist/tokens.css`](dist/tokens.css) | CSS-Variablen für Seiten ohne shadcn (erzeugt) |
 | [`dist/tokens.json`](dist/tokens.json) | Alle Farben je Modus als CSS-Wert und Hex, dazu Schriften, Abstände und Bewegung, für alles andere (erzeugt) |
 | [`dist/ohmtools-colors.sty`](dist/ohmtools-colors.sty) | Die Farben für LaTeX (erzeugt) |
@@ -42,28 +43,41 @@ andere wird daraus erzeugt.
    [`shadcn/index.css`](shadcn/index.css) ersetzen und
    `@fontsource-variable/geist` sowie `@fontsource-variable/geist-mono`
    installieren. App-eigenes CSS kommt ans Ende von `src/index.css`.
-2. Komponenten mit `npx shadcn@latest add <name>` hinzufügen, `uppercase`
-   sowie `tracking-wider` / `tracking-widest` aus den erzeugten Dateien
-   entfernen und die Handanpassungen aus DESIGN.md, „Components“, einbauen
-   (roter Lösch-Knopf, Dialog als Blatt von unten auf dem Telefon, gleitender
-   Tab-Indikator, …).
+2. Komponenten aus diesem Repository übernehmen, nicht aus der
+   shadcn-Registry:
 
-   Ist die shadcn-Registry nicht erreichbar (in abgeschotteten Umgebungen
-   wie Claude Code im Web antwortet sie mit HTTP 403), die Komponente aus
-   zeiteisen (`src/components/ui/`) kopieren, dort sind die Handanpassungen
-   schon drin. Fehlt sie auch dort, aus dem Repository
+   ```sh
+   npx --yes github:ohmtools/design list              # was es gibt
+   npx --yes github:ohmtools/design add responsive-dialog settings
+   ```
+
+   `add` kopiert die Komponenten samt allem, was sie importieren, an
+   dieselben Pfade unter `src/` wie in [`shadcn/src/`](shadcn/src/) und nennt
+   die npm-Pakete, die noch fehlen; `@/lib/utils` (`cn`) bringt `shadcn init`
+   mit. Eine eigene Datei der App bleibt, außer mit `--force`. Die Kopien
+   tragen in der ersten Zeile einen Hinweis auf ihre Quelle und werden in der
+   App nie bearbeitet (auch nicht vom Formatierer: die Verzeichnisse
+   `src/components/ui`, `src/components/ohmtools` und `src/lib/ohmtools` aus
+   seiner Konfiguration nehmen); eine Änderung kommt zuerst hierher, für alle
+   Apps, dann `add` erneut.
+
+   Was es hier nicht gibt, mit `npx shadcn@latest add <name>` hinzufügen,
+   `uppercase` sowie `tracking-wider` / `tracking-widest` entfernen und die
+   Handanpassungen aus DESIGN.md, „Components“, einbauen. Ist die
+   shadcn-Registry nicht erreichbar (in abgeschotteten Umgebungen wie Claude
+   Code im Web antwortet sie mit HTTP 403), aus dem Repository
    [shadcn-ui/ui](https://github.com/shadcn-ui/ui) nachbauen, wie es die
    Registry tut: `apps/v4/registry/bases/base/ui/<name>.tsx` nehmen, jede
    Klasse `cn-…` durch ihre `@apply`-Liste aus
    `apps/v4/registry/styles/style-vega.css` ersetzen und `IconPlaceholder`
-   durch das genannte lucide-Icon. In den Notizen der App festhalten, woher
-   jede Komponente stammt.
+   durch das genannte lucide-Icon. Braucht eine zweite App dieselbe
+   Komponente, gehört sie hierher.
 3. Dunkelmodus: `public/dark.js` und ein `ThemeProvider`, siehe DESIGN.md,
    „Light and dark“. Kein Umschalter für das Farbschema.
 4. In der CI prüfen, dass das Theme unverändert bleibt:
 
    ```yaml
-   - run: npx --yes github:ohmtools/design check src/index.css components.json src/components/ui/*.tsx
+   - run: npx --yes github:ohmtools/design check src/index.css components.json src/components/**/*.tsx src/lib/ohmtools/*.ts
    ```
 
 ### Webseite ohne shadcn
@@ -128,6 +142,8 @@ Projekts aufgerufen, endet mit 1, wenn eine Datei dem Design nicht folgt:
   popup-glass` so enthalten, wie sie in `shadcn/index.css` stehen;
 - `components.json` muss denselben Stil, dieselbe Grundfarbe, dieselben Icons
   und dieselben Menü-Einstellungen verwenden;
+- eine Datei mit dem Hinweis von `add` in der ersten Zeile muss der Datei
+  hier gleichen, die er nennt;
 - keine Datei darf Großbuchstaben oder gesperrte Schrift setzen
   (Tailwind-Klassen, `text-transform`, `\MakeUppercase`).
 
@@ -136,8 +152,9 @@ Für reproduzierbare CI einen Tag oder Commit festlegen
 
 ## Das Design ändern
 
-Eine Änderung hier ist eine Änderung für alle Apps. `tokens/` oder
-`DESIGN.md` bearbeiten, dann:
+Eine Änderung hier ist eine Änderung für alle Apps. `tokens/`,
+`DESIGN.md` oder eine Komponente in `shadcn/src/` bearbeiten (im Stil von
+zeiteisen: `oxfmt` mit Standardeinstellungen), dann:
 
 ```sh
 npm run build   # shadcn/index.css, dist/ und die Tabelle in DESIGN.md neu erzeugen

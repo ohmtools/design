@@ -3,6 +3,7 @@
 // returns a list of problems; empty = the file follows the design.
 import fs from "node:fs";
 import path from "node:path";
+import { checkCopy } from "./components.mjs";
 import { cssColor, cssDimension, cssFont, loadTokens, root } from "./tokens.mjs";
 
 // --- CSS: the theme's custom properties ----------------------------------------
@@ -206,6 +207,7 @@ export function checkFile(file) {
     problems.push(...checkCss(text));
     if (/@import\s+["']tailwindcss["']/.test(text)) problems.push(...checkShell(text));
   }
+  problems.push(...checkCopy(text));
   problems.push(...checkUppercase(text, file));
   return problems;
 }

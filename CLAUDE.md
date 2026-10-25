@@ -54,5 +54,17 @@ Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
 - `examples/index.html` rebuilds the look on `dist/tokens.css` alone; check
   it at 1440px and 360px, light and dark, after changing tokens or rules
   (headless chromium with Playwright, `colorScheme` per page).
+- `shadcn/src/` holds the shared React components at the paths they take
+  in an app (`ohmtools-design add` copies them, `check` compares a copy by
+  its first-line marker, `scripts/components.mjs` derives names and
+  dependencies from the imports; no manifest). They come from zeiteisen;
+  `dropdown-menu` and `tooltip` (zeiteisen uses neither) are shadcn's output
+  with the design's hand-edits. Format them with zeiteisen's `oxfmt`
+  (defaults). No dependencies here, so check them in a throwaway app: a
+  folder with `node_modules` linked from zeiteisen, `add --all`, a
+  `src/lib/utils.ts` re-exporting `cn`, `tsc` in strict mode, and a demo
+  page in Playwright at 390 × 844, 844 × 390, 834 × 1194 and 1440 × 900.
+  `steps.ts` must name the same queries as the variants of
+  `shadcn/index.css` (a test checks it).
 - `README.md` in German (user decision); `DESIGN.md`, this file and code
   comments in English, like zeiteisen.
