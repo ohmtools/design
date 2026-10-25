@@ -631,12 +631,17 @@ these rules come on top.
 
 ### Shell
 
+- The parts are the app shell's groups ("Which group"), so nothing shows up
+  twice (user decision, 2026-10-25, as in faltung): "Mit Ergänzungen | Nur
+  Original" is a view (tabs in the header, on phones in the bar at the
+  bottom, never in the settings), "Inhalt" and "Auf dieser Seite" are
+  panels, the settings an area.
 - Header (56px, 48px on `short:` screens): the title of the script (16px
   semibold), an outline badge "Kapitel 2 / 3", then on the right the view's
   tabs "Mit Ergänzungen | Nur Original" (`TabsList`) and the icon buttons
-  "Inhalt" (compact only), "Auf dieser Seite" and "Einstellungen" (settings
-  last, an open panel's button filled `accent`). The questions page has no
-  sections and so no "Auf dieser Seite" button.
+  "Inhalt" (compact and narrow), "Auf dieser Seite" (compact and wide) and
+  "Einstellungen" (settings last, an open panel's button filled `accent`).
+  The questions page has no sections and so no "Auf dieser Seite" button.
 - The three steps of the app shell (user decision, 2026-10-25: the canvas
   shows only wide and narrow):
   - Compact: one column, the header row as above with everything in it, no
@@ -657,20 +662,19 @@ these rules come on top.
     `border` line on its left; the current entry `foreground` and medium with
     a 1px `foreground` line, the others muted; Ergänzungen indented with a
     6px `accent-red` dot; closable like an app's sidebar.
-- Narrow: header with the title and a search button; content; a bottom bar
-  with the tabs "Skript | Inhalt | Einstellungen" (`TabsList`, 40px, full
-  width, safe area below). "Inhalt" holds the search (16px input) with its
-  hits and the chapter list (44px rows).
+- Narrow: header with the title and the icon buttons "Inhalt" and
+  "Einstellungen"; content; the bar at the bottom (`BottomBar`) with the
+  view's tabs "Mit Ergänzungen | Nur Original" (`TabsList`, 40px, full
+  width). "Inhalt" is a page of its own (back arrow): the search (16px
+  input) with its hits and the chapter list (44px rows), its sections under
+  the current chapter, so phones need no "Auf dieser Seite".
 - Settings are the app's settings ("App shell"; user decision, 2026-10-25,
   instead of the canvas's 340px panel): the dialog on wide screens, the page
-  of sections on compact ones; on phones the "Einstellungen" tab shows that
-  page, without a back arrow (it is the tab's root; the section pages have
-  one). Two sections: "Ansicht"
-  (radio group "Mit Ergänzungen" / "Nur Original", each with a muted
-  one-line description, below it muted "Hell oder dunkel folgt dem
-  Gerät."), its row showing the view picked; "Über dieses Skript" last (a
-  table: Original with the file name in mono, Umfang, Erstellt in mono, and
-  an outline link button "Vorlage auf GitHub" with an external-link icon).
+  of sections on compact screens and phones. One section, "Über dieses
+  Skript" (a table: Original with the file name in mono, Umfang, Erstellt
+  in mono; muted "Hell oder dunkel folgt dem Gerät."; an outline link
+  button "Vorlage auf GitHub" with an external-link icon). The view is not
+  a setting: it has its tabs.
   No language and no version: the page is German only and a document.
 
 ### Type
@@ -761,8 +765,8 @@ shadcn's typography, for the content only:
 "Motion" above, applied to reading:
 
 - The next page (forward, a later chapter) comes in from the right, the
-  previous one from the left; on phones the bottom bar's tabs come in from
-  the side of the picked tab.
+  previous one from the left; pages of their own ("Inhalt" on phones, the
+  settings) come in from the right and go back to it.
 - "Mit Ergänzungen | Nur Original" fades the page in again, without moving
   it.
 - "Auf dieser Seite" (wide) slides in from the right and out to the right;
