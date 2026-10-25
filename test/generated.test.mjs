@@ -5,6 +5,7 @@ import { test } from "node:test";
 import {
   checkComponentsJson,
   checkCss,
+  checkShell,
   checkUppercase,
   sameValue,
   themeDeclarations,
@@ -20,6 +21,7 @@ test("generated files are up to date (npm run build)", () => {
 
 test("the generated theme files pass the check", () => {
   assert.deepEqual(checkCss(read("shadcn/index.css")), []);
+  assert.deepEqual(checkShell(read("shadcn/index.css")), []);
   assert.deepEqual(checkCss(read("dist/tokens.css")), []);
   assert.deepEqual(checkComponentsJson(read("shadcn/components.json")), []);
 });
@@ -33,6 +35,20 @@ test("the check finds a changed and a missing colour", () => {
     "light: --primary is #dc2626, expected #0a0a0a",
     "light: --ring missing, expected #a3a3a3",
     '--font-mono missing, expected "Geist Mono Variable", ui-monospace, monospace',
+  ]);
+});
+
+test("the check wants the step variants and popup-glass of shadcn/index.css", () => {
+  const css = read("shadcn/index.css")
+    .replace(
+      /@custom-variant compact \{[\s\S]*?\n\}/,
+      "@custom-variant compact (@media (width >= 40rem), (height < 600px) and (orientation: landscape));",
+    )
+    .replace(/@utility popup-glass \{[\s\S]*?\n\}/, "")
+    .replace("@custom-variant wide (@media", "@custom-variant  wide  (@media");
+  assert.deepEqual(checkShell(css), [
+    "@custom-variant compact differs from shadcn/index.css",
+    "@utility popup-glass missing, copy it from shadcn/index.css",
   ]);
 });
 

@@ -123,7 +123,9 @@ Projekts aufgerufen, endet mit 1, wenn eine Datei dem Design nicht folgt:
   Radius und beide Schriften (`--font-sans`, `--font-mono`) unverändert
   enthalten (Farben werden nach Wert verglichen: `#FFF` gleich `#ffffff`), hell (`:root`) und dunkel
   (`.dark`, oder `:root` in einer Media-Query `prefers-color-scheme: dark`);
-  app-eigene Variablen sind erlaubt;
+  app-eigene Variablen sind erlaubt; importiert sie `tailwindcss`, muss sie
+  außerdem die Varianten `compact`, `wide` und `short` und `@utility
+  popup-glass` so enthalten, wie sie in `shadcn/index.css` stehen;
 - `components.json` muss denselben Stil, dieselbe Grundfarbe, dieselben Icons
   und dieselben Menü-Einstellungen verwenden;
 - keine Datei darf Großbuchstaben oder gesperrte Schrift setzen

@@ -104,6 +104,51 @@ export function checkCss(css, t = loadTokens()) {
   return problems;
 }
 
+// --- CSS: what a Tailwind theme adds around the tokens -------------------------
+
+// The step variants and `popup-glass` as shadcn/index.css writes them
+// (comments and whitespace aside). Only in a Tailwind file: plain pages on
+// dist/tokens.css have neither.
+const SHELL = [
+  "@custom-variant compact",
+  "@custom-variant wide",
+  "@custom-variant short",
+  "@utility popup-glass",
+];
+
+// The statement that starts with `head`: up to its `;`, or its block.
+function statement(text, head) {
+  const pattern = head.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "\\s+");
+  const start = text.search(new RegExp(pattern + "(?![\\w-])"));
+  if (start < 0) return null;
+  let depth = 0;
+  for (let i = start; i < text.length; i++) {
+    if (text[i] === ";" && depth === 0) return text.slice(start, i + 1);
+    if (text[i] === "{") depth++;
+    if (text[i] === "}" && --depth === 0) return text.slice(start, i + 1);
+  }
+  return null;
+}
+
+const squash = (text) =>
+  text
+    .replace(/\s+/g, " ")
+    .replace(/\s*([{};,])\s*/g, "$1")
+    .trim();
+
+export function checkShell(css) {
+  const strip = (text) => text.replace(/\/\*[\s\S]*?\*\//g, "");
+  const app = strip(css);
+  const design = strip(fs.readFileSync(path.join(root, "shadcn/index.css"), "utf8"));
+  return SHELL.flatMap((head) => {
+    const actual = statement(app, head);
+    if (actual === null) return [`${head} missing, copy it from shadcn/index.css`];
+    return squash(actual) === squash(statement(design, head))
+      ? []
+      : [`${head} differs from shadcn/index.css`];
+  });
+}
+
 // --- components.json: the shadcn settings that shape the look -----------------
 
 const STYLE_KEYS = [
@@ -159,6 +204,7 @@ export function checkFile(file) {
   if (path.basename(file) === "components.json") problems.push(...checkComponentsJson(text));
   else if (path.extname(file) === ".css" && /--primary\s*:/.test(text)) {
     problems.push(...checkCss(text));
+    if (/@import\s+["']tailwindcss["']/.test(text)) problems.push(...checkShell(text));
   }
   problems.push(...checkUppercase(text, file));
   return problems;

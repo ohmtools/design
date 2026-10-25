@@ -7,6 +7,7 @@ import { checkFile } from "../scripts/check.mjs";
 const USAGE = `usage: ohmtools-design check <file>...
 
   *.css            a file that declares --primary must carry the theme unchanged
+                   (with tailwindcss: also the step variants and popup-glass)
   components.json  the shadcn style settings must match shadcn/components.json
   any file         no uppercase text, no wide letter spacing`;
 
