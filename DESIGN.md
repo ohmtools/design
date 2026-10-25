@@ -54,8 +54,21 @@ where an app and this file disagree, this file wins and the app gets fixed.
   they stay out of a plot that carries a red mark (a now-line, a playhead):
   they would read as the accent.
 - **Colour is never the only cue**: the kind, name or label is written on
-  the block itself; a plot names each curve at the curve (no legend), and a
-  shaded area has a second cue (hatching).
+  the block itself; a plot's curves are named where they are entered or
+  listed, each name with a short stroke in its colour before it (no legend
+  box), and a shaded area has a second cue (hatching in its border colour
+  over its fill).
+- **Plots in apps** (faltung, user decisions 2026-10-25):
+  - **Every line solid.** No dashed or dotted lines, above all none that
+    move: a dash pattern crawling along an animated curve is confusing. What
+    is secondary (a curve before a change, the part of a result not reached
+    yet) is thinner and `ring`, not dashed.
+  - **Nothing written inside the plot**: no curve labels, no values, no
+    legend. Numbers only on the axes, mono 12px `hour`; a second y axis on the
+    right when one curve has another unit.
+  - **No empty space**: the value range ends just above the largest value
+    and at 0 unless something is negative; the plot fills the height it is
+    given.
 - Lines inside a grid or chart are `grid` (fainter than `border`), their
   labels `hour`, in mono.
 - A mark drawn over coloured content (the now-line over blocks, faltung's
