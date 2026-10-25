@@ -235,8 +235,13 @@ where an app and this file disagree, this file wins and the app gets fixed.
 The app moves where state changes, never for decoration.
 
 - **One easing, `cubic-bezier(0.2, 0, 0, 1)`** (fast out, gentle landing),
-  about 200–300 ms: 280 ms coming in, 200 ms going out
-  (`motion.duration-in`, `motion.duration-out`).
+  at half the usual speed (user decision, 2026-10-25: movement should be
+  easy to follow): 560 ms coming in, 400 ms going out
+  (`motion.duration-in`, `motion.duration-out`); shadcn's own popups (100 ms)
+  take 200 ms.
+- An animation that explains something (faltung's guide building a step: a
+  curve mirrored, shifted, an area filling) plays once when its state
+  changes, 1–2.5 s, easing in and out so the eye can follow.
 - Without a library: the browser's View Transitions where the layout changes
   (a sidebar opening, a phone page coming in), the Web Animations API where
   something only slides in, CSS for the rest.

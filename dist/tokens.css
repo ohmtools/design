@@ -10,8 +10,8 @@
   --space-divider: 24px;
   --space-divider-narrow: 16px;
   --ease: cubic-bezier(0.2, 0, 0, 1);
-  --duration-in: 280ms;
-  --duration-out: 200ms;
+  --duration-in: 560ms;
+  --duration-out: 400ms;
   --background: #ffffff;
   --foreground: #0a0a0a;
   --card: #fafafa;
