@@ -10,11 +10,14 @@ where an app and this file disagree, this file wins and the app gets fixed.
 - [shadcn/ui](https://ui.shadcn.com) with style `base-vega` (Base UI
   primitives, not Radix), base colour Neutral, icons lucide, fonts Geist and
   Geist Mono. Config: [`shadcn/components.json`](shadcn/components.json),
-  theme: [`shadcn/index.css`](shadcn/index.css).
+  stylesheet: [`shadcn/src/styles/ohmtools.css`](shadcn/src/styles/ohmtools.css),
+  imported by the app's `src/index.css` ([`shadcn/index.css`](shadcn/index.css)).
 - **The design's own theme on shadcn's components**: OLED black and white
   grounds, a neutral `primary`, red (`accent-red`) as the one accent, data
-  coloured by kind. The theme lives in `src/index.css` only; components keep
+  coloured by kind. The theme lives in the design's stylesheet only; components keep
   shadcn's classes apart from the hand-edits listed under "Components".
+  Components that more than one app needs are shared from
+  [`shadcn/src/`](shadcn/src/) ("Shared components").
   Tailwind for layout plus the semantic tokens (`text-muted-foreground`,
   `border`, `bg-red`, `text-warning`); no raw colours in app code.
 - Projects without shadcn (plain web pages, LaTeX, anything else) rebuild the
@@ -187,50 +190,55 @@ where an app and this file disagree, this file wins and the app gets fixed.
   2026-10-25). Check that `document.documentElement.scrollHeight` equals
   `innerHeight` on every view.
 - **Three steps, the same content in other containers** (the `compact:`,
-  `wide:` and `short:` variants in `shadcn/index.css`):
+  `wide:` and `short:` variants of the design's stylesheet; in script `useStep()`
+  from `steps.ts`, see "Shared components"):
 
-  | Step | When | Layout |
-  | --- | --- | --- |
-  | Narrow (base) | below 40rem: phones upright, Split View | one column; header on top, the view's controls (tabs, navigation) in a bar at the bottom, within thumb reach; panels are pages of their own with a back arrow |
-  | Compact (`compact:`) | from 40rem, or under 600px height in landscape: phones turned sideways, iPad upright, short laptops | one header row with everything; panels as a 380px sheet from the right |
-  | Wide (`wide:`) | from 64rem AND 600px height: iPad landscape, desktop | panels as a 340px sidebar beside the content, closable |
+  | Step | When | Devices | Layout |
+  | --- | --- | --- | --- |
+  | Narrow (base) | below 40rem | phones upright, narrow windows | one column; header on top, the view's tabs and controls in a bar at the bottom, within thumb reach; panels and settings are pages of their own with a back arrow; every popup is a drawer |
+  | Compact (`compact:`) | from 40rem, or under 600px height in landscape | phones turned sideways, iPads upright (744–834px), small laptops | one header row with everything; panels as a 380px sheet from the right, over the content; popups; settings a page |
+  | Wide (`wide:`) | from 64rem AND 700px height | large iPads upright (1024px), iPads in landscape, desktops | panels as a 340px sidebar beside the content, closable; settings a dialog |
+
+  Wide only where the content and the sidebar fit side by side: at 1024px a
+  week of five days plus the 340px sidebar fit, at 834px they do not (user
+  decision, 2026-10-25). 700px: a laptop with about 650px under the browser's
+  bars is a small laptop and takes the compact step. iPads upright take the
+  compact step, not the phone's: their width holds the whole content, and
+  popups at the element are what iPads do. Orientation counts only for
+  `short:`; a tall, narrow desktop window takes the step of its width. Put
+  `interactive-widget=resizes-visual` into the viewport meta, so the
+  on-screen keyboard never changes the step.
 
   `short:` (under 600px height in landscape) lowers the header and puts less
   in each line. What only cares about width keeps `lg:` / `md:`.
 - **A header**, 56px (48px on `short:` screens): left the app tile (red,
   with the name) or what the view belongs to, then the view's tabs and
   navigation from compact on; right the panels' icon buttons, then the
-  settings last. The page has one `<h1>`, `sr-only` if nothing shows it.
-- **Settings are a dialog, not a panel**, so an app can grow its settings
-  without crowding a sidebar. One section per topic, the same sections on
-  every step: "General" first (the language as tabs, the languages named in
-  themselves; what else concerns the whole app), "About" last (name,
-  version in mono, GitHub link, debug info). The version (from
+  settings last. When one row does not hold everything on a compact screen
+  that is not `short:` (an iPad upright in German), the view's switches move
+  to a second row under it; on `short:` screens the row puts less in each
+  part instead. The page has one `<h1>`, `sr-only` if nothing shows it.
+- **Settings are never a panel**, so an app can grow its settings without
+  crowding a sidebar: a dialog on wide screens, a page on phones and compact
+  screens (user decision, 2026-10-25). One section per topic, the same
+  sections on every step: "General" first (the language as tabs, the
+  languages named in themselves; what else concerns the whole app), "About"
+  last (name, version in mono, GitHub link, debug info). The version (from
   `package.json`, put in at build time) tells which deploy a browser runs.
-  - From compact on: a centred dialog of up to 1000×720, at least 24px off
-    the screen's edges (on `short:` screens 12px above and below, inside the
-    safe areas), frosted glass like every popup. Left the sections, 240px
-    (184px on `short:`): the title "Settings" over ghost buttons with an icon, the
-    open one filled `accent` and semibold (`aria-current="page"`), a
-    `border` line on their right. Right the open section's title (16px
-    semibold) with the close button, its content below, scrolling inside
-    the dialog. Groups within a section are split by lines, 24px around
-    each. Dialogs the settings open stand over them.
-  - Narrow: a page like a panel's (back arrow, title "Settings"), listing
-    the sections as 56px rows: a 20px muted icon, the name, what is set now
-    muted at the right (language, mode, version in mono), a chevron; lines
-    between the rows from the name on. A section opens as a page one level
-    deeper; its back arrow returns to the list.
-  - Panels stay panels (notes, groups, …): sidebar, sheet, page.
-
-| Container | Narrow | Compact | Wide |
-| --- | --- | --- | --- |
-| Menus, pickers | drawer from the bottom | popover | popover |
-| Panels (notes, groups, …) | own page | sheet from the right | sidebar |
-| Settings | page of sections, each a page | dialog, sections on the left | dialog, sections on the left |
-| Dialogs | sheet from the bottom, main button on top, full width | centred, at most 28rem | centred |
-| Questions (`AlertDialog`) | centred | centred | centred |
-
+  `SettingsDialog` and `SettingsPage` build both (see "Shared components").
+  - Wide: a centred dialog of up to 1000×720, at least 24px off the
+    screen's edges, frosted glass like every popup. Left the sections,
+    240px: the title "Settings" over ghost buttons with an icon, the open
+    one filled `accent` and semibold (`aria-current="page"`), a `border`
+    line on their right. Right the open section's title (16px semibold)
+    with the close button, its content below, scrolling inside the dialog.
+    Groups within a section are split by lines, 24px around each. Dialogs
+    the settings open stand over them.
+  - Narrow and compact: a page in place of the view (back arrow, title
+    "Settings"), listing the sections as 56px rows: a 20px muted icon, the
+    name, what is set now muted at the right (language, mode, version in
+    mono), a chevron; lines between the rows from the name on. A section
+    opens as a page one level deeper; its back arrow returns to the list.
 - Page, header, bars, sheets and toasts pad by `env(safe-area-inset-*)`
   (needs `viewport-fit=cover` in the viewport meta).
 - Transient feedback is a toast (sonner), never a panel: on phones above the
@@ -238,6 +246,116 @@ where an app and this file disagree, this file wins and the app gets fixed.
 - Every state has a way forward: an empty state names what to do with its
   buttons right there, an error offers "Try again". Destructive buttons are
   red and stand next to "Cancel".
+
+### Elements by step
+
+Each step has its own elements for the same job; an element of one step
+never shows up on another (user decision, 2026-10-25). **No popups on
+phones, no drawers from compact on, no sidebar on phones, no pages of their
+own on wide screens** except the views behind tabs.
+
+| Element | Narrow | Compact | Wide |
+| --- | :---: | :---: | :---: |
+| Drawer from the bottom | ✓ | ✗ | ✗ |
+| Popup: popover, menu, a select's list, dialog, question | ✗ | ✓ | ✓ |
+| Sidebar | ✗ | ✓ a sheet from the right over the content, 380px, full height | ✓ beside the content, 340px |
+| Page of its own (a panel, the settings) | ✓ | settings only | ✗ |
+| Views behind tabs | ✓ in the bar at the bottom | ✓ in the header | ✓ in the header |
+| Editing in the page | ✓ where it fits, else a drawer | ✓ where it fits, else a sheet from the right | ✓ |
+| Expanding in the page | ✓ | ✓ | ✓ |
+| Toast | ✓ above the bar at the bottom | ✓ bottom right | ✓ bottom right |
+| Bar at the bottom | ✓ | ✗ | ✗ |
+| Header with everything | ✗ | ✓ | ✓ |
+| Tooltip, hover | ✗ | with a mouse (`hover: hover`) | ✓ |
+| Keyboard shortcuts | ✗ | with a keyboard | ✓ |
+| Swipe gestures | ✓ | with touch, always also a button | ✗ |
+
+Their counterparts, wide and compact on the left, phones on the right:
+
+| Wide and compact | Narrow |
+| --- | --- |
+| Popover, menu, a select's list | drawer from the bottom |
+| Dialog, question | drawer from the bottom |
+| Editing in the page that does not fit | drawer from the bottom |
+| Sidebar (compact: sheet from the right) | page of its own |
+| Settings dialog (wide) | page of sections, each a page |
+| Tabs in the header | tabs in the bar at the bottom |
+| Toast bottom right | toast above the bar at the bottom |
+| Tooltip, keyboard shortcut | reachable another way: shown, in a drawer, on a page |
+| A button | a swipe gesture (the button may stay) |
+
+- Input, not layout: a compact screen is a phone turned sideways (touch) or
+  a small laptop (mouse). Tooltips and hover follow `hover: hover`, touch
+  targets and gestures `pointer: coarse`, never the step.
+- Compact screens in landscape keep `env(safe-area-inset-left/right)` (the
+  camera and the corners of a phone turned sideways) on header, sheets and
+  content. A phone's keyboard covers most of a landscape screen: fields go
+  to the top of a sheet or dialog.
+
+### Which group
+
+What the person does picks the group; the group brings the element of each
+step.
+
+| Group | Narrow | Compact | Wide |
+| --- | --- | --- | --- |
+| **View** (tabs) | bar at the bottom | header | header |
+| **Editing in the page** | in the page where it fits, else a drawer | in the page where it fits, else a sheet from the right | in the page |
+| **Panel** | page of its own | sheet from the right | sidebar |
+| **Area** (settings) | page of sections | page of sections | large dialog |
+| **Toast** | above the bar | bottom right | bottom right |
+| **Expanding** | in the page | in the page | in the page |
+| **Popup** | drawer | popover, menu, dialog, question | popover, menu, dialog, question |
+
+Ask in this order; the first yes decides:
+
+1. A main view of equal rank that is used on its own (faltung's animator,
+   guide, properties)? **View.**
+2. The point of the view, changed often, taking effect at once (faltung's
+   formulas)? **Editing in the page.** It fits when it takes at most two
+   lines and what it changes stays in sight; else it goes into a drawer
+   (narrow) or a sheet from the right (compact), `PageEditor`.
+3. Used beside the content, for longer and again and again (zeiteisen's
+   groups and notes)? **Panel.**
+4. An area of its own with sections, visited rarely, not needing the content
+   in sight (the settings)? **Area.**
+5. Feedback on something that already happened ("Link copied")? **Toast.**
+6. Extra information in its place that should block nothing (the function
+   reference inside faltung's editor)? **Expanding.**
+7. Anything else, short, once, then back to the content? **Popup**, below.
+
+Where they meet: stays open while the person goes on working in the content
+→ panel; closed after one thing → popup. Must be seen together with the main
+content → panel; replaces it → view. Changed every time → in the page; now
+and then → popup.
+
+### Popups
+
+| Kind | When | Leaving it |
+| --- | --- | --- |
+| **Menu** (`Popup kind="menu"`, `kind="select"`) | a list of actions, or one choice that closes once picked | closes |
+| **Popover** (`Popup kind="popover"`) | details or small settings of one element, taking effect at once | closes |
+| **Dialog** (`Popup kind="dialog"`) | a task with an end: inputs count only with the main button; or reading too long for a popover | runs Cancel, or nothing |
+| **Question** (`Popup kind="question"`) | before something that cannot be undone | runs Cancel |
+
+- **Leaving without choosing** (a swipe down, a press outside, Esc, the back
+  gesture, the close button): a popup with Cancel runs Cancel, without
+  asking; a popup without Cancel does nothing and waits for its buttons, and
+  shows no swipe handle (user decision, 2026-10-25). Menus, popovers,
+  selects and editors that apply at once lose nothing by closing: closing
+  is their Cancel.
+- **Undo before questions**: deleting what can be brought back shows a toast
+  with "Undo" instead of asking; the question stays for what cannot be
+  undone.
+- The main button: in a drawer on top, full width, 44px; in a dialog bottom
+  right. Red only when it destroys something, next to Cancel.
+- **At most one level on top**: over a panel, a page or the settings a
+  popup; over a popup only a dialog or a question (on phones a second
+  drawer, stacked). Never three.
+- Popups scroll inside themselves. On phones a dialog longer than one screen
+  or with several steps becomes a page of its own.
+- Drawers: the content starts 16px under the swipe handle and keeps the
+  bottom safe area; buttons 44px.
 
 ## Motion
 
@@ -247,7 +365,8 @@ The app moves where state changes, never for decoration.
   at half the usual speed (user decision, 2026-10-25: movement should be
   easy to follow): 560 ms coming in, 400 ms going out
   (`motion.duration-in`, `motion.duration-out`); shadcn's own popups (100 ms)
-  take 200 ms.
+  take 200 ms. A drawer comes in in 560 ms on its own easing and leaves at
+  the speed of the swipe.
 - An animation that explains something (faltung's guide building a step: a
   curve mirrored, shifted, an area filling) plays once when its state
   changes, 1–2.5 s, easing in and out so the eye can follow.
@@ -270,13 +389,13 @@ The app moves where state changes, never for decoration.
   sideways (`overflow-x: hidden`) while it moves, else a horizontal
   scrollbar flashes; of overlapping slides only the last one releases it.
 - A View Transition names its parts (`view-transition-name`) only while it
-  runs (`html[data-transition]` set for its duration, zeiteisen's
-  `src/motion.css`). For a sidebar the old shot of the page is hidden and
+  runs (`html[data-transition]` set for its duration, the design's
+  stylesheet). For a sidebar the old shot of the page is hidden and
   the new one stands at once; only the sidebar slides (a crossfade of the
   page's two widths shows every line twice).
 - **`prefers-reduced-motion`: no movement anywhere**, the app's own or
   shadcn's; state changes still show, at once (the rule at the end of
-  `shadcn/index.css`).
+  the design's stylesheet).
 
 ## Language
 
@@ -293,8 +412,79 @@ The app moves where state changes, never for decoration.
 
 ## Components
 
-shadcn generates them; these hand-edits are part of the design (zeiteisen's
-`src/components/ui/NOTES.md`) and go back in after every regeneration:
+### Shared components
+
+Everything of the design that more than one app needs lives once, in
+[`shadcn/src/`](shadcn/src/), at the path it takes in an app.
+
+**The element groups.** An app names the group, never the element: each
+group renders the right element for the step it runs on ("Elements by
+step", "Which group"), with the design's motion and the rule for leaving a
+popup. Inside an `AppShell`:
+
+| Group | Component | Narrow | Compact | Wide |
+| --- | --- | --- | --- | --- |
+| View | `Views` (tabs), `ViewControls` (the view's own controls) | bar at the bottom | header | header |
+| Editing in the page | `PageEditor` | in the page where it `fits`, else a drawer | in the page where it `fits`, else a sheet from the right | in the page |
+| Panel | `Panel` with `usePanel()` | page of its own | sheet from the right over the content | sidebar beside the content |
+| Area | `Area` with `useArea()` | page of sections | page of sections | large dialog |
+| Toast | `toast()` (`lib/ohmtools/toast.ts`) | above the bar | bottom right | bottom right |
+| Expanding | `Expand` | in the page | in the page | in the page |
+| Popup | `Popup` with `kind` `menu`, `select`, `popover`, `dialog` or `question` (rows: `PopupItem`, `PopupGroup`, `PopupSeparator`) | drawer | the `kind`'s popup | the `kind`'s popup |
+
+```tsx
+<AppShell title="Faltung" brand={<Brand />} actions={<SettingsButton />}>
+  <Views value={view} onValueChange={setView} items={VIEWS} label={m.views} />
+  <PageEditor title={m.functions} editLabel={m.edit} summary={<Summary />}>…</PageEditor>
+  <Panel open={notes.open} onClose={notes.hide} title={m.notes}>…</Panel>
+  <Area open={settings.open} onClose={settings.hide} title={m.settings} sections={SECTIONS} />
+  <Popup kind="question" open={…} onOpenChange={…} title={m.delete_q} action={m.delete}
+    destructive cancel={m.cancel} onAction={…} />
+</AppShell>
+```
+
+`AppShell` is the app shell of "App shell": one viewport tall, the header
+(brand left, actions right, the views between them from compact on, in a
+second row where one does not hold them), the content, the wide sidebar,
+the bar at the bottom on phones, pages of their own over everything (the
+rest inert under them), the toaster and the colour scheme. The groups place
+themselves into it. Which popup `kind` fits is the person's task ("Popups");
+the step is never the app's business, except where content itself changes
+with the width (`useStep()`).
+
+**Underneath**, for what the groups do not cover: `components/ui/`, shadcn's
+components with the hand-edits below (zeiteisen's; `dropdown-menu` and
+`tooltip`, which zeiteisen does not use, from shadcn's output with the same
+hand-edits); the step-switching popups `ResponsiveDialog`,
+`ResponsiveAlertDialog`, `ResponsivePopover`, `ResponsiveMenu`,
+`ResponsiveSelect` on `PhoneDrawer`, `EditorSheet`, `PanelSheet`,
+`PanelHeader`, `SettingsDialog`, `SettingsPage`, `LanguageTabs`,
+`BottomBar`, `AppToaster`, `ThemeProvider`, `GitHubLink`; and in
+`lib/ohmtools/` `steps.ts` (the step queries, `useStep()`, `useMedia()`),
+`motion.ts` (the easing, view transitions, `slideIn`, `easeInOut`) and
+`bottom-bar-height.ts`. Texts come in as props (`closeLabel`, `backLabel`,
+titles), in the app's language.
+
+**The stylesheet** `styles/ohmtools.css` (generated from `tokens/`) holds
+all of the design's CSS: Tailwind, shadcn, the fonts, the theme, the step
+variants, `popup-glass`, the view transitions (`panel`, `forward`, `back`,
+`view-next`, `view-previous`) and the reduced-motion rule. An app's
+`src/index.css` imports it and adds only its own
+([`shadcn/index.css`](shadcn/index.css)).
+
+An app copies all of it with `npx --yes github:ohmtools/design add <name>…`
+(`--all`, `list`), which also copies what a file imports and names the npm
+packages still to install; the app brings `@/lib/utils` (`cn`) from
+`shadcn init`. A copy starts with a marker naming its source and is never
+edited in the app: `ohmtools-design check` fails when it differs, and a
+change goes into the design first, for every app. Apps leave the copies out
+of their formatter.
+
+### Hand-edits
+
+shadcn generates the components in `components/ui/`; these hand-edits are
+part of the design (zeiteisen's `src/components/ui/NOTES.md`) and go back in
+after every regeneration:
 
 - `uppercase` and `tracking-wider` / `tracking-widest` stripped.
 - `Button` variant `destructive`: filled red, `bg-red text-red-foreground
@@ -309,10 +499,18 @@ shadcn generates them; these hand-edits are part of the design (zeiteisen's
   sheets and drawers `border-foreground/30`. Sonner's toasts:
   `--normal-bg` the glass colour, `--normal-border` `foreground` at 30 %,
   `popup-glass` on the toast.
-- `DialogContent`: a sheet from the bottom edge below `compact:`, full
-  width, scrolling inside itself; centred from `compact:` on, at most 28rem.
-  `DialogFooter` stacks below `compact:` (main button on top) and is a row
-  from there. `DialogHeader` carries `pr-10` for the close button.
+- `DialogContent`: centred from `compact:` on, at most 28rem. Below
+  `compact:` it falls back to a sheet from the bottom edge, full width,
+  scrolling inside itself; apps never show it there (phones get a drawer,
+  `ResponsiveDialog`). `DialogFooter` stacks below `compact:` (main button
+  on top) and is a row from there. `DialogHeader` carries `pr-10` for the
+  close button.
+- `DialogContent` and `SheetContent` take `closeLabel`, the close button's
+  name in the app's language.
+- `Drawer`: free corners 10px, 560 ms in on its own easing (a swipe's close
+  keeps its own speed), `popup-glass` with its bleed in the same colour.
+- `DropdownMenuContent`, `TooltipContent`, `PopoverContent`, `SelectContent`
+  and the centred dialogs: 200 ms.
 - `TabsList` (default variant): one indicator span glides to the active tab;
   the active tab has no fill, border or shadow of its own.
 - `Checkbox`: a minus for `indeterminate`.
@@ -455,10 +653,11 @@ these rules come on top.
   with the tabs "Skript | Inhalt | Einstellungen" (`TabsList`, 40px, full
   width, safe area below). "Inhalt" holds the search (16px input) with its
   hits and the chapter list (44px rows).
-- Settings are the app's settings dialog ("App shell"; user decision,
-  2026-10-25, instead of the canvas's 340px panel); on phones the
-  "Einstellungen" tab shows its page of sections, without a back arrow (it
-  is the tab's root; the section pages have one). Two sections: "Ansicht"
+- Settings are the app's settings ("App shell"; user decision, 2026-10-25,
+  instead of the canvas's 340px panel): the dialog on wide screens, the page
+  of sections on compact ones; on phones the "Einstellungen" tab shows that
+  page, without a back arrow (it is the tab's root; the section pages have
+  one). Two sections: "Ansicht"
   (radio group "Mit Ergänzungen" / "Nur Original", each with a muted
   one-line description, below it muted "Hell oder dunkel folgt dem
   Gerät."), its row showing the view picked; "Über dieses Skript" last (a
@@ -560,7 +759,7 @@ shadcn's typography, for the content only:
   it.
 - "Auf dieser Seite" (wide) slides in from the right and out to the right;
   the page takes its new width at once. Panels on compact screens are
-  sheets, the settings a dialog, both as in apps.
+  sheets, the settings a page, both as in apps.
 - What is revealed fades and zooms in a little: an answer, the verdicts and
   explanations of a choice, the feedback of "Prüfen", the sections under a
   chapter just opened in the chapter list.
@@ -628,8 +827,8 @@ keep their own icons.
   block's day and time).
 - Respect `prefers-reduced-motion` (see "Motion").
 - Check every visible change at 360px and 400px wide (phones), on a phone
-  turned sideways (844 × 390) and at 1440px (desktop), in German and English,
-  in light and dark mode.
+  turned sideways (844 × 390), on an iPad upright (834 × 1194) and at 1440px
+  (desktop), in German and English, in light and dark mode.
 - Check motion in the browser, not in the code (Playwright with Chromium):
   after each interaction `document.getAnimations()` lists what moves (empty:
   nothing does); sample a slide on every animation frame (horizontal
