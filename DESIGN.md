@@ -69,7 +69,9 @@ where an app and this file disagree, this file wins and the app gets fixed.
 - No white flash: the mode is set before the first paint. shadcn apps: a
   blocking `<script src="/dark.js">` in `<head>` (a file, not inline, so the
   CSP needs no hash) sets the `.dark` class, a `ThemeProvider` keeps it in
-  sync. Plain pages: `dist/tokens.css` switches by media query alone.
+  sync. Plain pages: `dist/tokens.css` switches by media query alone. A page
+  shipped as one file with no CSP of its own (a Claude.ai artifact,
+  lernhelfer-skript) inlines the same script.
 
   ```js
   // public/dark.js
@@ -161,6 +163,13 @@ where an app and this file disagree, this file wins and the app gets fixed.
 - Full width, no max-width container. **Every step is exactly one viewport
   tall, the page never scrolls**: content, panels and pages scroll inside
   themselves.
+- **Every region that scrolls is `relative`.** An absolutely positioned
+  element inside it without a positioned ancestor (`sr-only` text in a
+  button is one) is laid out against the document, escapes the region's
+  clipping and makes the document taller; `scrollIntoView` then scrolls the
+  document and the header leaves the screen (found in lernhelfer-skript,
+  2026-10-25). Check that `document.documentElement.scrollHeight` equals
+  `innerHeight` on every view.
 - **Three steps, the same content in other containers** (the `compact:`,
   `wide:` and `short:` variants in `shadcn/index.css`):
 
@@ -213,6 +222,19 @@ The app moves where state changes, never for decoration.
   zoom in a little; a press gives a little (a button moves down 1px, a block
   shrinks), hover lifts a colour a little.
 - A live mark may pulse slowly (the now-line's dot). Nothing else loops.
+- Scrolling to a place on the view already shown is smooth; jumping to a
+  place on another page is instant, and the target is held in place while
+  the new page settles (drawings, charts and images that measure themselves
+  after mounting move it), for at most a second and only until the user
+  scrolls (wheel, touch, pointer).
+- A view sliding in sideways inside a scrolling region clips the region
+  sideways (`overflow-x: hidden`) while it moves, else a horizontal
+  scrollbar flashes; of overlapping slides only the last one releases it.
+- A View Transition names its parts (`view-transition-name`) only while it
+  runs (`html[data-transition]` set for its duration, zeiteisen's
+  `src/motion.css`). For a sidebar the old shot of the page is hidden and
+  the new one stands at once; only the sidebar slides (a crossfade of the
+  page's two widths shows every line twice).
 - **`prefers-reduced-motion`: no movement anywhere**, the app's own or
   shadcn's; state changes still show, at once (the rule at the end of
   `shadcn/index.css`).
@@ -288,7 +310,8 @@ plain type. The reference is the Lernhelfer's worksheet
 - Head: left "OhmTools" in semibold with the product in `muted-foreground`
   ("OhmTools Lernhelfer"); right the kind of document in `muted-foreground`
   ("Übungsblatt") and the badge of the sheet ("Angabe" or "Lösung"). A 1px
-  `foreground` line below.
+  `foreground` line below, 2mm (8px) under the badge's lower edge; the badge
+  never touches it.
 - Footer: a 1px `foreground` line above; left the subject and the sheet in
   `muted-foreground` ("Grundlagen der Elektrotechnik · Angabe"), right
   "Seite 2 / 5" with the numbers in mono, `foreground`.
@@ -367,6 +390,7 @@ these rules come on top.
   "Kapitel 2 / 3", then on the right the view's tabs "Mit Ergänzungen | Nur
   Original" (`TabsList`) and the icon buttons "Auf dieser Seite" and
   "Einstellungen" (settings last, an open panel's button filled `accent`).
+  The questions page has no sections and so no "Auf dieser Seite" button.
 - Wide: three columns, each scrolling for itself.
   - Left, 280px, `border` line right: a search `Input` in a top section,
     then the chapter list as sidebar buttons (32px, 8px radius, active
@@ -467,6 +491,23 @@ shadcn's typography, for the content only:
   badge when the hit lies in one), then the sentence with the term bold and
   underlined.
 
+### Motion
+
+"Motion" above, applied to reading:
+
+- The next page (forward, a later chapter) comes in from the right, the
+  previous one from the left; on phones the bottom bar's tabs come in from
+  the side of the picked tab.
+- "Mit Ergänzungen | Nur Original" fades the page in again, without moving
+  it.
+- "Auf dieser Seite" and "Einstellungen" slide in from the right and out to
+  the right; the page takes its new width at once.
+- What is revealed fades and zooms in a little: an answer, the verdicts and
+  explanations of a choice, the feedback of "Prüfen", the sections under a
+  chapter just opened in the chapter list.
+- A section of the page shown scrolls into view smoothly; a section of
+  another page is jumped to and held (see "Motion").
+
 ## App icon, favicon, link preview
 
 Flat, in the theme's colours: no gradients, no metal.
@@ -530,6 +571,16 @@ keep their own icons.
 - Check every visible change at 360px and 400px wide (phones), on a phone
   turned sideways (844 × 390) and at 1440px (desktop), in German and English,
   in light and dark mode.
+- Check motion in the browser, not in the code (Playwright with Chromium):
+  after each interaction `document.getAnimations()` lists what moves (empty:
+  nothing does); sample a slide on every animation frame (horizontal
+  overflow of the region and the document, opacity, transform) and its end
+  state (opacity 1, no transform, no inline style left behind), also after
+  fast repeated clicks; with `reducedMotion: "reduce"` no animation runs
+  longer than 1ms and no View Transition starts.
+- Documents: look at the PDF as an image (`pdftoppm -r 300`, cropped to the
+  running head, a task head, a figure), in both versions (Angabe and
+  Lösung).
 
 ## Colours
 
