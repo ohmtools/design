@@ -44,6 +44,16 @@ export function usePage(active: boolean) {
   useEffect(() => (active ? addPage() : undefined), [active, addPage]);
 }
 
+// The shell's place for pages of its own, marked as open while `active`;
+// `null` outside an `AppShell` (a popup on an error screen), where the caller
+// falls back to another element.
+export function usePageSlot(active: boolean): HTMLElement | null {
+  const shell = useContext(ShellContext);
+  const addPage = shell?.addPage;
+  useEffect(() => (active && addPage ? addPage() : undefined), [active, addPage]);
+  return shell?.slots.page ?? null;
+}
+
 export function AppShell({
   title,
   brand,

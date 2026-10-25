@@ -354,7 +354,10 @@ and then → popup.
   popup; over a popup only a dialog or a question (on phones a second
   drawer, stacked). Never three.
 - Popups scroll inside themselves. On phones a dialog longer than one screen
-  or with several steps becomes a page of its own.
+  or with several steps becomes a page of its own (`Popup kind="dialog"
+  page`): over everything, a panel's page too, coming in from the right,
+  its back arrow and Esc run Cancel, the buttons at the bottom as in a
+  drawer.
 - Drawers: the content starts 16px under the swipe handle and keeps the
   bottom safe area; buttons 44px.
 
