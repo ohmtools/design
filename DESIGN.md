@@ -425,11 +425,18 @@ these rules come on top.
 
 ### Shell
 
-- Header (56px): the title of the script (16px semibold), an outline badge
-  "Kapitel 2 / 3", then on the right the view's tabs "Mit Ergänzungen | Nur
-  Original" (`TabsList`) and the icon buttons "Auf dieser Seite" and
-  "Einstellungen" (settings last, an open panel's button filled `accent`).
-  The questions page has no sections and so no "Auf dieser Seite" button.
+- Header (56px, 48px on `short:` screens): the title of the script (16px
+  semibold), an outline badge "Kapitel 2 / 3", then on the right the view's
+  tabs "Mit Ergänzungen | Nur Original" (`TabsList`) and the icon buttons
+  "Inhalt" (compact only), "Auf dieser Seite" and "Einstellungen" (settings
+  last, an open panel's button filled `accent`). The questions page has no
+  sections and so no "Auf dieser Seite" button.
+- The three steps of the app shell (user decision, 2026-10-25: the canvas
+  shows only wide and narrow):
+  - Compact: one column, the header row as above with everything in it, no
+    bottom bar. "Inhalt" (search and chapter list as on phones) and "Auf
+    dieser Seite" are panels, a 380px sheet from the right; the page at most
+    720px wide with 24px side padding.
 - Wide: three columns, each scrolling for itself.
   - Left, 280px, `border` line right: a search `Input` in a top section,
     then the chapter list as sidebar buttons (32px, 8px radius, active
@@ -441,17 +448,20 @@ these rules come on top.
   - Right, 280px: "Auf dieser Seite" (14px medium) over a list with a 1px
     `border` line on its left; the current entry `foreground` and medium with
     a 1px `foreground` line, the others muted; Ergänzungen indented with a
-    6px `accent-red` dot. "Einstellungen" opens as a 340px panel in its place.
+    6px `accent-red` dot; closable like an app's sidebar.
 - Narrow: header with the title and a search button; content; a bottom bar
   with the tabs "Skript | Inhalt | Einstellungen" (`TabsList`, 40px, full
   width, safe area below). "Inhalt" holds the search (16px input) with its
   hits and the chapter list (44px rows).
-- Settings panel: a header row "Einstellungen" with a close button, then
-  sections split by lines: "Ansicht" (radio group "Mit Ergänzungen" / "Nur
-  Original", each with a muted one-line description), "Darstellung" ("Hell
-  oder dunkel folgt dem Gerät."), "Über dieses Skript" (a table: Original
-  with the file name in mono, Umfang, Erstellt in mono) and an outline link
-  button "Vorlage auf GitHub" with an external-link icon.
+- Settings are the app's settings dialog ("App shell"; user decision,
+  2026-10-25, instead of the canvas's 340px panel); on phones the
+  "Einstellungen" tab shows its page of sections. Two sections: "Ansicht"
+  (radio group "Mit Ergänzungen" / "Nur Original", each with a muted
+  one-line description, below it muted "Hell oder dunkel folgt dem
+  Gerät."), its row showing the view picked; "Über dieses Skript" last (a
+  table: Original with the file name in mono, Umfang, Erstellt in mono, and
+  an outline link button "Vorlage auf GitHub" with an external-link icon).
+  No language and no version: the page is German only and a document.
 
 ### Type
 
@@ -539,8 +549,9 @@ shadcn's typography, for the content only:
   the side of the picked tab.
 - "Mit Ergänzungen | Nur Original" fades the page in again, without moving
   it.
-- "Auf dieser Seite" and "Einstellungen" slide in from the right and out to
-  the right; the page takes its new width at once.
+- "Auf dieser Seite" (wide) slides in from the right and out to the right;
+  the page takes its new width at once. Panels on compact screens are
+  sheets, the settings a dialog, both as in apps.
 - What is revealed fades and zooms in a little: an answer, the verdicts and
   explanations of a choice, the feedback of "Prüfen", the sections under a
   chapter just opened in the chapter list.

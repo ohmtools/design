@@ -19,7 +19,9 @@ Generated from them: `shadcn/index.css`, `dist/*` and the colour table in
   rule under "Colour" in `DESIGN.md`) come from the user's design canvas
   "Übungsblatt und Skript", page "A3 Datenblatt" (user decision, 2026-10-24).
   The Lernhelfer's worksheet (claude-plugins) and lernhelfer-skript are to
-  follow them; until they do, the canvas wins over both.
+  follow them; until they do, the canvas wins over both. Except, by user
+  decision (2026-10-25): reading pages have the apps' compact step and
+  settings dialog, which the canvas does not show.
 - Never hand-edit a generated file: edit `tokens/` (or `DESIGN.md` outside
   the table, or `scripts/outputs.mjs`), run `npm run build`, commit the
   result. CI runs `npm run check` and `npm test`.
