@@ -182,10 +182,10 @@ where an app and this file disagree, this file wins and the app gets fixed.
   themselves; what else concerns the whole app), "About" last (name,
   version in mono, GitHub link, debug info). The version (from
   `package.json`, put in at build time) tells which deploy a browser runs.
-  - From compact on: a centred dialog of up to 760×560 (on `short:` screens
-    the screen's height less 12px above and below, inside the safe areas),
-    frosted glass like every popup. Left the sections, 216px (184px on
-    `short:`): the title "Settings" over ghost buttons with an icon, the
+  - From compact on: a centred dialog of up to 1000×720, at least 24px off
+    the screen's edges (on `short:` screens 12px above and below, inside the
+    safe areas), frosted glass like every popup. Left the sections, 240px
+    (184px on `short:`): the title "Settings" over ghost buttons with an icon, the
     open one filled `accent` and semibold (`aria-current="page"`), a
     `border` line on their right. Right the open section's title (16px
     semibold) with the close button, its content below, scrolling inside
