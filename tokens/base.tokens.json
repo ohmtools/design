@@ -37,12 +37,12 @@
     },
     "duration-in": {
       "$type": "duration",
-      "$value": { "value": 280, "unit": "ms" },
+      "$value": { "value": 560, "unit": "ms" },
       "$description": "Something coming in: a page, a panel, a week sliding in."
     },
     "duration-out": {
       "$type": "duration",
-      "$value": { "value": 200, "unit": "ms" },
+      "$value": { "value": 400, "unit": "ms" },
       "$description": "Something leaving: shorter than coming in."
     }
   }

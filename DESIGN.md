@@ -54,8 +54,21 @@ where an app and this file disagree, this file wins and the app gets fixed.
   they stay out of a plot that carries a red mark (a now-line, a playhead):
   they would read as the accent.
 - **Colour is never the only cue**: the kind, name or label is written on
-  the block itself; a plot names each curve at the curve (no legend), and a
-  shaded area has a second cue (hatching).
+  the block itself; a plot's curves are named where they are entered or
+  listed, each name with a short stroke in its colour before it (no legend
+  box), and a shaded area has a second cue (hatching in its border colour
+  over its fill).
+- **Plots in apps** (faltung, user decisions 2026-10-25):
+  - **Every line solid.** No dashed or dotted lines, above all none that
+    move: a dash pattern crawling along an animated curve is confusing. What
+    is secondary (a curve before a change, the part of a result not reached
+    yet) is thinner and `ring`, not dashed.
+  - **Nothing written inside the plot**: no curve labels, no values, no
+    legend. Numbers only on the axes, mono 12px `hour`; a second y axis on the
+    right when one curve has another unit.
+  - **No empty space**: the value range ends just above the largest value
+    and at 0 unless something is negative; the plot fills the height it is
+    given.
 - Lines inside a grid or chart are `grid` (fainter than `border`), their
   labels `hour`, in mono.
 - A mark drawn over coloured content (the now-line over blocks, faltung's
@@ -104,6 +117,9 @@ where an app and this file disagree, this file wins and the app gets fixed.
   | Blocks in a grid, times, hints, captions, badges | 12px (`text-xs`) | normal or medium |
   | Input, text area | 16px on phones (keeps iOS from zooming in), 14px from 768px (`text-base md:text-sm`) | normal |
 
+- An app sets `text-sm` on its root, so text without a size of its own is
+  14px, never the browser's 16px (faltung's pages fell back to 16px and read
+  too large next to zeiteisen). Formulas (KaTeX) scale with it.
 - Reading pages (long text, see "Reading pages") and documents add larger
   headings for their content; the shell around them keeps the three sizes.
 - **No uppercase text and no wide letter spacing** (`uppercase`,
@@ -228,8 +244,13 @@ where an app and this file disagree, this file wins and the app gets fixed.
 The app moves where state changes, never for decoration.
 
 - **One easing, `cubic-bezier(0.2, 0, 0, 1)`** (fast out, gentle landing),
-  about 200–300 ms: 280 ms coming in, 200 ms going out
-  (`motion.duration-in`, `motion.duration-out`).
+  at half the usual speed (user decision, 2026-10-25: movement should be
+  easy to follow): 560 ms coming in, 400 ms going out
+  (`motion.duration-in`, `motion.duration-out`); shadcn's own popups (100 ms)
+  take 200 ms.
+- An animation that explains something (faltung's guide building a step: a
+  curve mirrored, shifted, an area filling) plays once when its state
+  changes, 1–2.5 s, easing in and out so the eye can follow.
 - Without a library: the browser's View Transitions where the layout changes
   (a sidebar opening, a phone page coming in), the Web Animations API where
   something only slides in, CSS for the rest.
