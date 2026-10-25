@@ -115,6 +115,9 @@ where an app and this file disagree, this file wins and the app gets fixed.
   | Blocks in a grid, times, hints, captions, badges | 12px (`text-xs`) | normal or medium |
   | Input, text area | 16px on phones (keeps iOS from zooming in), 14px from 768px (`text-base md:text-sm`) | normal |
 
+- An app sets `text-sm` on its root, so text without a size of its own is
+  14px, never the browser's 16px (faltung's pages fell back to 16px and read
+  too large next to zeiteisen). Formulas (KaTeX) scale with it.
 - Reading pages (long text, see "Reading pages") and documents add larger
   headings for their content; the shell around them keeps the three sizes.
 - **No uppercase text and no wide letter spacing** (`uppercase`,
