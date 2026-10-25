@@ -181,7 +181,10 @@ where an app and this file disagree, this file wins and the app gets fixed.
 
 - Full width, no max-width container. **Every step is exactly one viewport
   tall, the page never scrolls**: content, panels and pages scroll inside
-  themselves.
+  themselves. Nor does it bounce: `html` and `body` have
+  `overscroll-behavior: none` (the design's stylesheet), else iOS pulls the
+  page in its rubber band and takes a horizontal swipe for that pull (found
+  in zeiteisen, 2026-10-25).
 - **Every region that scrolls is `relative`.** An absolutely positioned
   element inside it without a positioned ancestor (`sr-only` text in a
   button is one) is laid out against the document, escapes the region's
@@ -285,6 +288,14 @@ Their counterparts, wide and compact on the left, phones on the right:
 | Tooltip, keyboard shortcut | reachable another way: shown, in a drawer, on a page |
 | A button | a swipe gesture (the button may stay) |
 
+- **A swipe reads touch events** (`touchstart` / `touchend`, one finger),
+  not pointer events: iOS cancels the pointer as soon as it takes the move
+  for a vertical scroll, even of a region with nothing to scroll, but still
+  ends the touch. The region gets `touch-pan-y`. A region that scrolls one
+  way sets the other one too (`overflow-x-hidden` next to
+  `overflow-y-auto`, which alone makes x `auto`): content sliding in from
+  the side would scroll it sideways for a moment and eat the swipe (found
+  in zeiteisen, 2026-10-25).
 - Input, not layout: a compact screen is a phone turned sideways (touch) or
   a small laptop (mouse). Tooltips and hover follow `hover: hover`, touch
   targets and gestures `pointer: coarse`, never the step.
