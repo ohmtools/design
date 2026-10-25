@@ -149,12 +149,19 @@ export function AppShell({
               ref={header}
               className="flex h-14 items-center gap-4 pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] short:h-12 compact:pr-[max(1.5rem,env(safe-area-inset-right))] compact:pl-[max(1.5rem,env(safe-area-inset-left))]"
             >
-              <div ref={brandRef} className="flex min-w-0 shrink-0 items-center gap-2">
+              {/* Phones: the brand gives way to the actions (a long profile
+                  name truncates); from compact on it keeps its width and the
+                  views move to a second row instead. */}
+              <div ref={brandRef} className="flex min-w-0 items-center gap-2 compact:shrink-0">
                 {brand}
               </div>
               {step !== "narrow" && !wrap && (
                 <>
-                  <div aria-hidden className="h-6 w-px shrink-0 bg-border" />
+                  {/* Only where views follow (none on a first visit). */}
+                  <div
+                    aria-hidden
+                    className="h-6 w-px shrink-0 bg-border has-[+div:empty]:hidden"
+                  />
                   {views}
                 </>
               )}

@@ -217,7 +217,8 @@ where an app and this file disagree, this file wins and the app gets fixed.
   settings last. When one row does not hold everything on a compact screen
   that is not `short:` (an iPad upright in German), the view's switches move
   to a second row under it; on `short:` screens the row puts less in each
-  part instead. The page has one `<h1>`, `sr-only` if nothing shows it.
+  part instead. On phones the left part gives way to the buttons (a long
+  name truncates). The page has one `<h1>`, `sr-only` if nothing shows it.
 - **Settings are never a panel**, so an app can grow its settings without
   crowding a sidebar: a dialog on wide screens, a page on phones and compact
   screens (user decision, 2026-10-25). One section per topic, the same
@@ -442,6 +443,10 @@ popup. Inside an `AppShell`:
     destructive cancel={m.cancel} onAction={…} />
 </AppShell>
 ```
+
+A panel's sub view (zeiteisen's category of the groups) passes `onBack` to
+`Panel`: its back arrow shows on every step and returns to the panel's main
+view; the close button stays from compact on.
 
 `AppShell` is the app shell of "App shell": one viewport tall, the header
 (brand left, actions right, the views between them from compact on, in a
